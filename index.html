@@ -192,7 +192,7 @@ ul{padding:0;list-style:none}
       <button class="btn primary" id="zielPlay" type="button" hidden>Zur Meditation</button>
       <button class="link" id="replayIntro" type="button">Intro ansehen</button>
     </div>
-    <p class="help">Prototyp für Phase 1. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. Version 2.</p>
+    <p class="help">Prototyp für Phase 1. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. Version 3.</p>
   </section>
 
   <section class="screen" id="s-aufnahme" hidden>
@@ -702,7 +702,7 @@ function micError(err){
   if(n === 'NotFoundError') return 'Kein Mikrofon gefunden. Schließ eines an oder nutze „Datei wählen“.';
   if(n === 'NotReadableError' || n === 'AbortError') return 'Das Mikrofon ist gerade belegt. Schließ andere Apps, die es nutzen, und versuch es noch einmal.';
   if(n === 'OverconstrainedError') return 'Dieses Mikrofon ist nicht mehr verfügbar. Wähle ein anderes.';
-  return 'Kein Zugriff aufs Mikrofon. Entweder wurde er abgelehnt, oder das Mikrofon ist an diesem Ort gesperrt. Nimm dann über „Datei wählen“ auf.';
+  return 'Kein Zugriff aufs Mikrofon. Entweder wurde er abgelehnt, oder das Mikrofon ist an diesem Ort gesperrt. Nimm dann über „Datei wählen“ auf.' + (n ? ' (' + n + ')' : '');
 }
 function releaseMic(){
   mic.req++;
@@ -735,7 +735,8 @@ function listMics(activeId){
 function openMic(id){
   releaseMic();
   var token = mic.req;
-  outputMode('play-and-record');
+  /* Für die Aufnahme entscheidet das Handy selbst, wie beim ersten Stand, der am iPhone aufgenommen hat */
+  outputMode('auto');
   var c = audio();
   return navigator.mediaDevices.getUserMedia({ audio: id ? { deviceId: { exact: id } } : true, video: false }).catch(function(err){
     var n = err && err.name;
