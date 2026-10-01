@@ -192,7 +192,7 @@ ul{padding:0;list-style:none}
       <button class="btn primary" id="zielPlay" type="button" hidden>Zur Meditation</button>
       <button class="link" id="replayIntro" type="button">Intro ansehen</button>
     </div>
-    <p class="help">Prototyp für Phase 1. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät.</p>
+    <p class="help">Prototyp für Phase 1. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. Version 2.</p>
   </section>
 
   <section class="screen" id="s-aufnahme" hidden>
@@ -266,7 +266,7 @@ ul{padding:0;list-style:none}
       <label for="volVoice">Stimme</label><input type="range" id="volVoice" min="0" max="100" value="80">
       <label for="volTone">Ton</label><input type="range" id="volTone" min="0" max="100" value="40">
     </div>
-    <p class="help" id="playerNote">Kein Ton am iPhone? Schalte den Stummschalter an der Seite aus.</p>
+    <p class="help" id="playerNote">Kein Ton? Dreh die Lautstärke am Handy hoch und schalte am iPhone den Stummschalter aus.</p>
     <div class="row spread">
       <button class="link" id="stopBtn" type="button">Session beenden</button>
       <button class="link" id="wipeBtn" type="button">Alle Aufnahmen löschen</button>
@@ -370,7 +370,26 @@ function audio(){
   voiceGain = ctx.createGain(); voiceGain.connect(master);
   toneGain = ctx.createGain(); toneGain.connect(master);
   applyVolumes();
+  /* Hält das Handy den Ton mitten in der Session an (Anruf, Wechsel der Kopfhörer), wieder anwerfen */
+  ctx.onstatechange = function(){ if(P.playing) resumeAudio(); };
   return ctx;
+}
+/* iPhone: Ohne festen Ausgabemodus bleibt der Ton bei Stummschalter still und kommt nach einer Aufnahme nur leise aus dem Hörer am Ohr. */
+function outputMode(mode){
+  try{ if(navigator.audioSession && navigator.audioSession.type !== mode) navigator.audioSession.type = mode; }catch(e){}
+}
+function resumeAudio(){
+  if(ctx && ctx.state !== 'running' && ctx.state !== 'closed'){
+    try{ var p = ctx.resume(); if(p && p.catch) p.catch(function(){}); }catch(e){}
+  }
+}
+/* Vor jeder Wiedergabe: Mikrofon freigeben, auf Wiedergabe umstellen, Ton wecken */
+function wake(){
+  cancelRec(); releaseMic();
+  outputMode('playback');
+  var c = audio();
+  resumeAudio();
+  return c;
 }
 function applyVolumes(){
   if(!ctx) return;
@@ -422,20 +441,23 @@ var previewSrc = null;
 function stopPreview(){ if(previewSrc){ try{ previewSrc.stop(); }catch(e){} previewSrc = null; } }
 function preview(i){
   stopPreview();
+  wake();
   ensureBuffer(i).then(function(r){
     if(!r){ setStatus('Diese Aufnahme lässt sich nicht abspielen. Nimm den Satz neu auf.', true); return; }
-    ctx.resume();
+    resumeAudio();
     var s = ctx.createBufferSource(), g = ctx.createGain();
     s.buffer = r.buffer; g.gain.value = r.gain; s.connect(g); g.connect(voiceGain);
     s.start(); previewSrc = s;
+    setTimeout(function(){
+      if(previewSrc === s && ctx.state !== 'running') setStatus('Dein Handy hält den Ton gerade an. Tippe noch einmal auf „Anhören“.', true);
+    }, 700);
   });
 }
 
 /* Leiser Klangteppich im Intro, nur auf Wunsch */
 var pad = null;
 function startPad(){
-  var c = audio(); if(!c) return;
-  c.resume();
+  var c = wake(); if(!c) return;
   var g = c.createGain(); g.gain.value = 0.0001; g.connect(c.destination);
   var os = [146.83, 220, 220.7, 293.66].map(function(f, i){
     var o = c.createOscillator(), og = c.createGain();
@@ -476,7 +498,7 @@ function setPlaying(on){
   $('playBtn').setAttribute('aria-label', on ? 'Pause' : 'Abspielen');
 }
 function startSession(){
-  var c = audio();
+  var c = wake();
   if(!c){ $('playLine').textContent = 'Dieser Browser kann hier keinen Ton abspielen.'; return; }
   stopPreview();
   $('playLine').textContent = 'Einen Moment …';
@@ -505,6 +527,9 @@ function startSession(){
     setPlaying(true);
     P.tick = setInterval(tick, 200);
     try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ P.lock = l; }).catch(function(){}); }catch(e){}
+    setTimeout(function(){
+      if(P.playing && ctx.state !== 'running') $('playLine').textContent = 'Dein Handy hält den Ton gerade an. Tippe auf Pause und dann wieder auf Start.';
+    }, 900);
   });
 }
 function tick(){
@@ -634,7 +659,7 @@ function renderPlayer(){
   var c = count();
   $('playLine').textContent = 'Setz deine Kopfhörer auf und tippe auf Start.';
   $('playerNote').textContent = (c === 0 ? 'Noch keine Aufnahme. Du hörst den Ton und liest die Sätze mit. ' : '') +
-    'Kein Ton am iPhone? Schalte den Stummschalter an der Seite aus.';
+    'Kein Ton? Dreh die Lautstärke am Handy hoch und schalte am iPhone den Stummschalter aus.';
   showRemain(minutes() * 60);
 }
 
@@ -710,6 +735,7 @@ function listMics(activeId){
 function openMic(id){
   releaseMic();
   var token = mic.req;
+  outputMode('play-and-record');
   var c = audio();
   return navigator.mediaDevices.getUserMedia({ audio: id ? { deviceId: { exact: id } } : true, video: false }).catch(function(err){
     var n = err && err.name;
@@ -896,7 +922,7 @@ $('playerBack').addEventListener('click', function(){ cur = 0; show('aufnahme');
 $('playBtn').addEventListener('click', function(){
   if(!P.started){ startSession(); return; }
   if(P.playing){ ctx.suspend(); setPlaying(false); }
-  else { ctx.resume(); setPlaying(true); }
+  else { outputMode('playback'); ctx.resume(); setPlaying(true); }
 });
 $('stopBtn').addEventListener('click', function(){
   if(P.started){ stopSession(); $('playLine').textContent = 'Session beendet.'; }
@@ -930,6 +956,8 @@ $('wipeBtn').addEventListener('click', function(){
   cur = 0;
   show('ziel');
 });
+
+document.addEventListener('visibilitychange', function(){ if(!document.hidden && P.playing) resumeAudio(); });
 
 /* ---------- Start ---------- */
 var vol = store.get('ichbin.vol', null);
