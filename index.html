@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mikrofon-Auswahl</title>
+  <style>
+    :root {
+      --bg: #f6f6f4; --fg: #1d1d1b; --muted: #6b6b66; --card: #ffffff;
+      --border: #dcdcd6; --accent: #2f6fdf; --meter: #2fa36b; --error: #c0392b;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161615; --fg: #ececea; --muted: #9a9a94; --card: #20201f;
+        --border: #3a3a37; --accent: #6b9cff; --meter: #45c487; --error: #ff7b6b;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 32px 16px; background: var(--bg); color: var(--fg);
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 480px; margin: 0 auto; background: var(--card);
+      border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+    }
+    h1 { font-size: 1.25rem; margin: 0 0 4px; }
+    p { margin: 0 0 16px; color: var(--muted); }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    select, button {
+      width: 100%; font: inherit; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--fg);
+    }
+    button { background: var(--accent); color: #fff; border: none; cursor: pointer; font-weight: 600; }
+    button:disabled { opacity: .5; cursor: default; }
+    .meter { height: 10px; border-radius: 5px; background: var(--border); overflow: hidden; margin-top: 16px; }
+    .meter > div { height: 100%; width: 0; background: var(--meter); transition: width 60ms linear; }
+    .status { margin-top: 12px; font-size: .9rem; color: var(--muted); min-height: 1.4em; }
+    .status.error { color: var(--error); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Mikrofon auswählen</h1>
+    <p>Es wird nur auf Mikrofone zugegriffen – keine Kamera, keine anderen Geräte.</p>
+
+    <button id="allow">Mikrofonzugriff erlauben</button>
+
+    <div id="picker" class="hidden">
+      <label for="mic">Mikrofon</label>
+      <select id="mic"></select>
+      <div class="meter" aria-label="Eingangspegel"><div id="level"></div></div>
+    </div>
+
+    <div id="status" class="status" role="status"></div>
+  </main>
+
+  <script>
+    const allowBtn = document.getElementById('allow');
+    const picker = document.getElementById('picker');
+    const select = document.getElementById('mic');
+    const level = document.getElementById('level');
+    const statusEl = document.getElementById('status');
+
+    let stream = null;
+    let audioCtx = null;
+    let rafId = null;
+
+    function setStatus(text, isError = false) {
+      statusEl.textContent = text;
+      statusEl.classList.toggle('error', isError);
+    }
+
+    function stopStream() {
+      if (rafId) cancelAnimationFrame(rafId);
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      if (audioCtx) audioCtx.close();
+      stream = audioCtx = rafId = null;
+      level.style.width = '0';
+    }
+
+    // Nur Audio anfordern – video ist explizit false, damit nie nach der Kamera gefragt wird.
+    async function openMic(deviceId) {
+      stopStream();
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: deviceId ? { deviceId: { exact: deviceId } } : true,
+        video: false
+      });
+      startMeter(stream);
+      const track = stream.getAudioTracks()[0];
+      setStatus('Aktiv: ' + (track.label || 'Mikrofon'));
+      return track.getSettings().deviceId;
+    }
+
+    // Nur Geräte vom Typ "audioinput" auflisten – Kameras und Lautsprecher werden ignoriert.
+    async function listMics(selectedId) {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const mics = devices.filter(d => d.kind === 'audioinput');
+      select.innerHTML = '';
+      mics.forEach((d, i) => {
+        const opt = document.createElement('option');
+        opt.value = d.deviceId;
+        opt.textContent = d.label || `Mikrofon ${i + 1}`;
+        select.appendChild(opt);
+      });
+      if (selectedId) select.value = selectedId;
+      if (!mics.length) setStatus('Kein Mikrofon gefunden.', true);
+    }
+
+    function startMeter(s) {
+      audioCtx = new AudioContext();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      audioCtx.createMediaStreamSource(s).connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      const tick = () => {
+        analyser.getByteTimeDomainData(data);
+        let peak = 0;
+        for (const v of data) peak = Math.max(peak, Math.abs(v - 128));
+        level.style.width = Math.min(100, (peak / 128) * 200) + '%';
+        rafId = requestAnimationFrame(tick);
+      };
+      tick();
+    }
+
+    allowBtn.addEventListener('click', async () => {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setStatus('Dieser Browser unterstützt keinen Mikrofonzugriff (HTTPS erforderlich).', true);
+        return;
+      }
+      allowBtn.disabled = true;
+      try {
+        const id = await openMic();
+        await listMics(id);
+        allowBtn.classList.add('hidden');
+        picker.classList.remove('hidden');
+      } catch (err) {
+        allowBtn.disabled = false;
+        setStatus(err.name === 'NotAllowedError'
+          ? 'Zugriff verweigert. Bitte Mikrofon in den Browser-Einstellungen erlauben.'
+          : 'Fehler: ' + err.message, true);
+      }
+    });
+
+    select.addEventListener('change', async () => {
+      try {
+        await openMic(select.value);
+      } catch (err) {
+        setStatus('Mikrofon konnte nicht geöffnet werden: ' + err.message, true);
+      }
+    });
+
+    navigator.mediaDevices?.addEventListener?.('devicechange', () => {
+      if (stream) listMics(select.value);
+    });
+  </script>
+</body>
+</html>
