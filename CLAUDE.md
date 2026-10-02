@@ -15,7 +15,17 @@ https://marcsmidt99-design.github.io/ich-bin/.
 - **Ablauf.** Der Besitzer arbeitet am Handy. Arbeite auf einem Branch `claude/…`, öffne einen
   Pull Request und erkläre in einfachen Worten, was sich ändert. Live ist eine Änderung erst nach
   dem Merge.
-- **Version.** Erhöhe bei jeder Änderung die Versionsnummer im Hinweistext der Zielauswahl, damit
-  sichtbar ist, ob die neue Fassung angekommen ist.
+- **Version.** Erhöhe bei jeder Änderung `VERSION` in `index.html`. Die Zahl steht in der
+  Zielauswahl und in der Rückmeldung, damit sichtbar ist, ob die neue Fassung angekommen ist.
+- **Aufnahme und Wiedergabe.** Dieser Teil ist auf dem iPhone heikel und lässt sich hier nicht auf
+  einem echten Gerät testen. Ändere ihn nur, wenn es nötig ist, und sag dazu, dass ein Test am
+  Handy aussteht.
 - **Keine Heilversprechen.** Die Kategorie „Raus aus dem Stimmungstief“ ist aus dem Start
   genommen und kommt erst nach einer Rechtsprüfung zurück.
+
+## Stand und nächster Schritt
+
+Der Fahrplan hat Tore: Erst wenn ein Ziel erreicht ist, wird weitergebaut. Aktuell läuft die Phase
+„Beweis“: 20 Testpersonen nutzen die App eine Woche, mindestens die Hälfte soll an 4 von 7 Tagen
+hören. Gemessen wird über „Rückmeldung senden“ in der Zielauswahl. Die App hat keinen Server, die
+Testpersonen schicken den Text selbst. Baue keine Plus-Funktionen, bevor dieses Ergebnis vorliegt.

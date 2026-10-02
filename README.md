@@ -22,3 +22,9 @@ Der Mikrofonzugriff braucht HTTPS oder `localhost`, z. B.:
 python3 -m http.server 8000
 # dann http://localhost:8000 öffnen
 ```
+
+## Rückmeldung im Test
+
+In der Zielauswahl steht „Rückmeldung senden“. Der Knopf baut einen kurzen Text mit den Hörtagen der
+ersten Woche, der Zahl der Sessions und Minuten und der Zahl der aufgenommenen Sätze. Die Testperson
+verschickt ihn selbst, zum Beispiel per Messenger. Die App sendet nichts von allein.
