@@ -117,6 +117,8 @@ ul{padding:0;list-style:none}
 .days-dots{display:grid;grid-template-columns:repeat(21,1fr);gap:.2rem}
 .days-dots i{height:.4rem;border-radius:1rem;background:var(--line)}
 .days-dots i.on{background:var(--ember)}
+.report{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;border-top:1px solid var(--line);padding-top:.35rem}
+.report textarea{width:100%;font:inherit;font-size:.85rem;line-height:1.45;color:var(--moon);background:transparent;border:1px solid var(--line);border-radius:.6rem;padding:.6rem;resize:vertical}
 
 /* Recording */
 .segs{display:grid;grid-template-columns:repeat(10,1fr);gap:.3rem}
@@ -219,6 +221,12 @@ ul{padding:0;list-style:none}
     <div class="days">
       <div class="days-top"><span class="days-title" id="daysTitle">21 Tage</span><span class="days-sub" id="daysSub"></span></div>
       <div class="days-dots" id="daysDots" aria-hidden="true"></div>
+      <div class="report">
+        <button class="link" id="reportBtn" type="button">Rückmeldung senden</button>
+        <p class="days-sub" id="reportNote" role="status">Nach einer Woche: Schick deine Hörtage an die Person, von der du den Link hast.</p>
+        <label class="vh" for="reportText">Deine Rückmeldung als Text</label>
+        <textarea id="reportText" rows="8" readonly hidden></textarea>
+      </div>
     </div>
     <ul class="cats">
       <li><button class="cat open" id="catOpen" type="button"><span class="cat-name">Positive Gedanken</span><span class="cat-note" id="catNote">10 Sätze</span></button></li>
@@ -226,14 +234,13 @@ ul{padding:0;list-style:none}
       <li><button class="cat locked" type="button" data-plus><span class="cat-name">Reichtum &amp; Fülle</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
       <li><button class="cat locked" type="button" data-plus><span class="cat-name">Innere Ruhe &amp; Schlaf</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
       <li><button class="cat locked" type="button" data-plus><span class="cat-name">Selbstvertrauen &amp; Fokus</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
-      <li><button class="cat locked" type="button" data-plus><span class="cat-name">Raus aus dem Stimmungstief</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
     </ul>
     <div class="row spread">
       <button class="btn primary" id="zielPlay" type="button" hidden>Zur Meditation</button>
       <button class="link" id="replayIntro" type="button">Intro ansehen</button>
       <button class="link" id="shareBtn" type="button">App weiterempfehlen</button>
     </div>
-    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. Version 5.</p>
+    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 6.</span></p>
   </section>
 
   <section class="screen" id="s-plus" hidden>
@@ -242,9 +249,9 @@ ul{padding:0;list-style:none}
     </header>
     <div class="grow">
       <p class="eyebrow">Ich bin Plus</p>
-      <h1 class="line sm">Sechs Ziele. Deine Stimme für jeden Tag.</h1>
+      <h1 class="line sm">Fünf Ziele. Deine Stimme für jeden Tag.</h1>
       <ul class="ticks">
-        <li><span><strong>Fünf weitere Ziele.</strong> Selbstwert, Fülle, Ruhe und Schlaf, Fokus und Wege aus dem Stimmungstief.</span></li>
+        <li><span><strong>Vier weitere Ziele.</strong> Selbstwert, Fülle, Ruhe und Schlaf sowie Fokus.</span></li>
         <li><span><strong>30 Sätze pro Ziel.</strong> Vom ruhigen Einstieg bis zum kraftvollen Schluss.</span></li>
         <li><span><strong>Sanft oder stark.</strong> Jeder Satz in zwei Fassungen, damit er sich wahr anfühlt.</span></li>
         <li><span><strong>21-Tage-Programm.</strong> Ein fester Rahmen mit Anfang und Ende.</span></li>
@@ -380,6 +387,7 @@ var GAP = 4;          // Sekunden Pause zwischen zwei Sätzen
 var SILENT_DUR = 5;   // Anzeigedauer für Sätze ohne Aufnahme
 var SCREENS = ['intro','hinweise','ziel','plus','aufnahme','fertig','player'];
 var APP_URL = 'https://marcsmidt99-design.github.io/ich-bin/';
+var VERSION = 6;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
 
 function $(id){ return document.getElementById(id); }
 
@@ -796,6 +804,8 @@ function stopSession(){
   if(!P.started) return;
   clearInterval(P.tick); P.tick = null;
   var running = ctx.state === 'running', t = ctx.currentTime, at = running ? t + 0.3 : 0;
+  var played = Math.min(t, P.endAt) - P.startAt;
+  if(played >= 30) addStats(played);
   if(running){
     master.gain.cancelScheduledValues(t);
     master.gain.setValueAtTime(master.gain.value, t);
@@ -871,6 +881,42 @@ function renderDays(){
     : (run >= 2 ? run + ' Tage in Folge' : (heard ? 'Heute gehört. Morgen geht es weiter.' : 'Heute noch nicht gehört.'));
   var box = $('daysDots'); box.textContent = '';
   for(var i = 0; i < 21; i++){ var dot = document.createElement('i'); if(i < n) dot.className = 'on'; box.appendChild(dot); }
+}
+/* Rückmeldung für den Test: Hörtage der ersten Woche und Nutzung als Text zum Verschicken. Nichts wird von selbst gesendet. */
+function keyDate(k){ var p = k.split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+function shortDay(k){ var p = k.split('-'); return p[2] + '.' + p[1] + '.'; }
+function firstDay(){
+  var f = store.get('ichbin.first', null);
+  if(typeof f === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(f)) return f;
+  var days = loadDays().slice().sort();
+  f = days.length ? days[0] : dayKey(new Date());
+  store.set('ichbin.first', f);
+  return f;
+}
+function addStats(secs){
+  var s = store.get('ichbin.stats', null);
+  if(!s || typeof s.sessions !== 'number' || typeof s.secs !== 'number') s = { sessions: 0, secs: 0 };
+  s.sessions++; s.secs += secs;
+  store.set('ichbin.stats', s);
+}
+function reportText(){
+  var first = firstDay(), start = keyDate(first), end = keyDate(first);
+  end.setDate(end.getDate() + 6);
+  var endKey = dayKey(end);
+  var week = loadDays().filter(function(k){ return k >= first && k <= endKey; }).sort();
+  var passed = Math.max(1, Math.min(7, Math.round((keyDate(dayKey(new Date())) - start) / 864e5) + 1));
+  var s = store.get('ichbin.stats', null);
+  if(!s || typeof s.sessions !== 'number' || typeof s.secs !== 'number') s = { sessions: 0, secs: 0 };
+  return [
+    'Ich bin · Rückmeldung',
+    'Gehört an ' + week.length + ' von ' + (passed < 7 ? 'bisher ' + passed : '7') + (passed === 1 ? ' Tag' : ' Tagen') + ' (Start ' + shortDay(first) + ')',
+    'Tage: ' + (week.length ? week.map(shortDay).join(', ') : 'noch keiner'),
+    'Sessions: ' + s.sessions + ' · Minuten: ' + Math.round(s.secs / 60),
+    'Sätze in meiner Stimme: ' + count() + ' von ' + N,
+    'Version ' + VERSION,
+    '',
+    'Das möchte ich noch sagen: '
+  ].join('\n');
 }
 /* Ruhiger Sternenhimmel im Hintergrund, einmal gezeichnet */
 function sky(){
@@ -1170,6 +1216,27 @@ $('shareBtn').addEventListener('click', function(){
       .catch(function(err){ if(!err || err.name !== 'AbortError') copy(); });
   } else copy();
 });
+$('reportBtn').addEventListener('click', function(){
+  var text = reportText(), note = $('reportNote'), box = $('reportText');
+  function manual(){
+    box.value = text; box.hidden = false;
+    note.textContent = 'Kopiere den Text und schick ihn der Person, von der du den Link hast.';
+    try{ box.focus(); box.select(); }catch(e){}
+  }
+  function copy(){
+    try{
+      navigator.clipboard.writeText(text).then(function(){
+        box.value = text; box.hidden = false;
+        note.textContent = 'Text kopiert. Füg ihn in eine Nachricht an die Person ein, von der du den Link hast.';
+      }, manual);
+    }catch(e){ manual(); }
+  }
+  if(navigator.share){
+    navigator.share({ title: 'Ich bin · Rückmeldung', text: text })
+      .then(function(){ note.textContent = 'Danke für deine Rückmeldung.'; })
+      .catch(function(err){ if(!err || err.name !== 'AbortError') copy(); });
+  } else copy();
+});
 [['fxVoice', 'voice'], ['fxMelody', 'melody']].forEach(function(pair){
   $(pair[0]).checked = fx[pair[1]];
   $(pair[0]).addEventListener('change', function(){ fx[pair[1]] = this.checked; store.set('ichbin.fx', fx); applyFx(); });
@@ -1270,6 +1337,8 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden &&
 /* ---------- Start ---------- */
 var vol = store.get('ichbin.vol', null);
 if(vol && typeof vol.voice === 'number'){ $('volVoice').value = vol.voice; $('volTone').value = vol.tone; }
+$('verNote').textContent = 'Version ' + VERSION + '.';
+firstDay();
 var min = store.get('ichbin.min', 10);
 if($('t' + min)) $('t' + min).checked = true;
 
