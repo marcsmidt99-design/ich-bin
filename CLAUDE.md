@@ -23,9 +23,32 @@ https://marcsmidt99-design.github.io/ich-bin/.
 - **Keine Heilversprechen.** Die Kategorie „Raus aus dem Stimmungstief“ ist aus dem Start
   genommen und kommt erst nach einer Rechtsprüfung zurück.
 
+## Aufbau
+
+- Jeder Satz hat einen Schlüssel aus Ziel, Fassung und Platz im Bogen, zum Beispiel `wert.s.4`
+  (`k` kraftvoll, `s` sanft, `x` eigenes Set). Unter diesem Schlüssel liegt die Aufnahme in
+  IndexedDB (`ichbin` / `rec`).
+- Ausnahme: Die zehn Sätze der ersten Fassung behalten die Schlüssel `0` bis `9` (`LEGACY`), damit
+  alte Aufnahmen erhalten bleiben und `v6.html` sie weiter findet.
+- Ein Ziel hat 30 Sätze in drei Teilen zu je zehn. Teil 1 (`first`) ist eine Auswahl über den
+  ganzen Bogen, die Session spielt alle aufgenommenen Sätze in der Reihenfolge des Bogens.
+- `PLUS_OPEN = true` gibt in der Testphase alles frei. Mit `false` bleibt nur Teil 1 von
+  „Positive Gedanken“ in der kraftvollen Fassung offen, alles andere führt zur Plus-Seite.
+- Die App hat keinen Server. Einstellungen und Zähler liegen in `localStorage` unter `ichbin.*`.
+
 ## Stand und nächster Schritt
 
-Der Fahrplan hat Tore: Erst wenn ein Ziel erreicht ist, wird weitergebaut. Aktuell läuft die Phase
-„Beweis“: 20 Testpersonen nutzen die App eine Woche, mindestens die Hälfte soll an 4 von 7 Tagen
-hören. Gemessen wird über „Rückmeldung senden“ in der Zielauswahl. Die App hat keinen Server, die
-Testpersonen schicken den Text selbst. Baue keine Plus-Funktionen, bevor dieses Ergebnis vorliegt.
+Version 7 (2. Oktober 2026): fünf Ziele mit je 30 Sätzen, kraftvolle und sanfte Fassung, eigenes
+Set mit Link zum Teilen, Frequenzwahl, Pausenlänge, gemischte Reihenfolge, Stimmung vor und nach
+der Session, einzelne Aufnahme löschen, Aufnahmen als ZIP sichern, „Rückmeldung senden“.
+
+Der Besitzer hat entschieden, die App auszubauen, bevor der Test mit 20 Personen gelaufen ist. Der
+Test bleibt der nächste Schritt: Mindestens die Hälfte soll an 4 von 7 Tagen hören. Gemessen wird
+über „Rückmeldung senden“ in der Zielauswahl, die Testpersonen schicken den Text selbst.
+
+`v6.html` ist die vorige Fassung als Rückfall. Sie kann weg, sobald Version 7 am iPhone geprüft ist.
+
+Offen, weil es Konten oder Angaben des Besitzers braucht: Bezahlen, Impressum und
+Datenschutzerklärung, Fassung für die App-Stores. Offen, weil es sich hier nicht anhören lässt:
+Klangteppiche wie Regen oder Meer, vorgelesenes Intro. Tägliche Erinnerungen gehen in einer
+Web-App nicht verlässlich.

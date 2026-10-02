@@ -118,13 +118,6 @@ ul{padding:0;list-style:none}
 .days-dots i{height:.4rem;border-radius:1rem;background:var(--line)}
 .days-dots i.on{background:var(--ember)}
 .report{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;border-top:1px solid var(--line);padding-top:.35rem}
-.offer{display:flex;flex-direction:column;gap:.7rem;padding:.9rem 1rem;border:1px solid var(--ember);border-radius:1rem;background:var(--dusk)}
-.line.empty{color:var(--haze);font-style:italic}
-/* Die beiden Hauptknöpfe der Zielauswahl bleiben am unteren Rand sichtbar, auch wenn die Liste länger ist als der Bildschirm */
-.act{position:sticky;bottom:0;z-index:2;margin-inline:-1.25rem;padding:.7rem 1.25rem;background:color-mix(in srgb, var(--night) 90%, transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.own{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;width:100%;border-top:1px solid var(--line);padding-top:.75rem}
-.own input{flex:1;min-width:9rem;background:var(--dusk);border:1px solid var(--line);border-radius:.7rem;padding:.6rem .8rem}
-.own .help{flex-basis:100%;overflow-wrap:anywhere}
 .report textarea{width:100%;font:inherit;font-size:.85rem;line-height:1.45;color:var(--moon);background:transparent;border:1px solid var(--line);border-radius:.6rem;padding:.6rem;resize:vertical}
 
 /* Recording */
@@ -223,30 +216,11 @@ ul{padding:0;list-style:none}
   <section class="screen" id="s-ziel" hidden>
     <header class="grow" style="flex:none;padding-top:.5rem">
       <h1 class="line sm">Was soll deine Stimme dir sagen?</h1>
-      <p class="sub">Wähle ein Ziel. Jedes hat 30 Sätze in drei Teilen, zehn reichen für den Anfang.</p>
+      <p class="sub">Zum Start ist ein Ziel offen. Die anderen kommen mit Plus.</p>
     </header>
-    <div class="offer" id="offer" hidden>
-      <p id="offerText"></p>
-      <div class="row">
-        <button class="btn primary" id="offerYes" type="button">Übernehmen</button>
-        <button class="link" id="offerNo" type="button">Verwerfen</button>
-      </div>
-    </div>
-    <ul class="cats" id="cats"></ul>
-    <fieldset class="chips" id="levelBox">
-      <legend>Fassung</legend>
-      <input class="vh" type="radio" name="level" id="lvK" value="k" checked><label for="lvK">Kraftvoll</label>
-      <input class="vh" type="radio" name="level" id="lvS" value="s"><label for="lvS">Sanft</label>
-    </fieldset>
-    <p class="help" id="levelHelp">Kraftvoll: „Ich bin …“. Sanft: „Ich erlaube mir …“. Wer zweifelt, fängt sanft an.</p>
-    <div class="row act">
-      <button class="btn primary" id="zielPlay" type="button" hidden>Zur Meditation</button>
-      <button class="btn primary" id="zielRec" type="button">Sätze einsprechen</button>
-    </div>
     <div class="days">
       <div class="days-top"><span class="days-title" id="daysTitle">21 Tage</span><span class="days-sub" id="daysSub"></span></div>
       <div class="days-dots" id="daysDots" aria-hidden="true"></div>
-      <p class="days-sub" id="moodLine" hidden></p>
       <div class="report">
         <button class="link" id="reportBtn" type="button">Rückmeldung senden</button>
         <p class="days-sub" id="reportNote" role="status">Nach einer Woche: Schick deine Hörtage an die Person, von der du den Link hast.</p>
@@ -254,12 +228,19 @@ ul{padding:0;list-style:none}
         <textarea id="reportText" rows="8" readonly hidden></textarea>
       </div>
     </div>
+    <ul class="cats">
+      <li><button class="cat open" id="catOpen" type="button"><span class="cat-name">Positive Gedanken</span><span class="cat-note" id="catNote">10 Sätze</span></button></li>
+      <li><button class="cat locked" type="button" data-plus><span class="cat-name">Selbstwert &amp; Selbstliebe</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
+      <li><button class="cat locked" type="button" data-plus><span class="cat-name">Reichtum &amp; Fülle</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
+      <li><button class="cat locked" type="button" data-plus><span class="cat-name">Innere Ruhe &amp; Schlaf</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
+      <li><button class="cat locked" type="button" data-plus><span class="cat-name">Selbstvertrauen &amp; Fokus</span><span class="cat-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</span></button></li>
+    </ul>
     <div class="row spread">
+      <button class="btn primary" id="zielPlay" type="button" hidden>Zur Meditation</button>
       <button class="link" id="replayIntro" type="button">Intro ansehen</button>
-      <button class="link" id="plusInfo" type="button">Was ist Plus?</button>
       <button class="link" id="shareBtn" type="button">App weiterempfehlen</button>
     </div>
-    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 7.</span></p>
+    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 6.</span></p>
   </section>
 
   <section class="screen" id="s-plus" hidden>
@@ -272,14 +253,13 @@ ul{padding:0;list-style:none}
       <ul class="ticks">
         <li><span><strong>Vier weitere Ziele.</strong> Selbstwert, Fülle, Ruhe und Schlaf sowie Fokus.</span></li>
         <li><span><strong>30 Sätze pro Ziel.</strong> Vom ruhigen Einstieg bis zum kraftvollen Schluss.</span></li>
-        <li><span><strong>Sanft oder kraftvoll.</strong> Jeder Satz in zwei Fassungen, damit er sich wahr anfühlt.</span></li>
-        <li><span><strong>Eigene Sätze.</strong> Schreib dein eigenes Set oder übernimm eines per Link, zum Beispiel von deinem Coach.</span></li>
+        <li><span><strong>Sanft oder stark.</strong> Jeder Satz in zwei Fassungen, damit er sich wahr anfühlt.</span></li>
         <li><span><strong>21-Tage-Programm.</strong> Ein fester Rahmen mit Anfang und Ende.</span></li>
       </ul>
       <p class="price">Geplant: 39,99 € im Jahr mit 7 Tagen Test, oder 7,99 € im Monat.</p>
-      <p class="help">In der Testphase ist Plus für alle frei. Kaufen kann man es noch nicht.</p>
+      <p class="help">Plus ist noch nicht zu kaufen. Bis dahin nutzt du die kostenlose Fassung mit einem Ziel.</p>
     </div>
-    <button class="btn primary wide" id="plusOk" type="button">Alles klar</button>
+    <button class="btn primary wide" id="plusOk" type="button">Weiter mit dem freien Ziel</button>
   </section>
 
   <section class="screen" id="s-aufnahme" hidden>
@@ -287,13 +267,6 @@ ul{padding:0;list-style:none}
       <button class="link" id="recBack" type="button">Zurück zu den Zielen</button>
       <p class="count" id="recCount">Satz 1 von 10</p>
     </header>
-    <p class="eyebrow" id="recGoal">Positive Gedanken · kraftvoll</p>
-    <fieldset class="chips" id="partBox">
-      <legend class="vh">Teil wählen</legend>
-      <input class="vh" type="radio" name="part" id="p0" value="0" checked><label for="p0" id="p0l">Teil 1</label>
-      <input class="vh" type="radio" name="part" id="p1" value="1"><label for="p1" id="p1l">Teil 2</label>
-      <input class="vh" type="radio" name="part" id="p2" value="2"><label for="p2" id="p2l">Teil 3</label>
-    </fieldset>
     <div class="segs" id="segs"></div>
     <div class="sentence">
       <h1 class="line sm" id="recLine">Ich bin dankbar für diesen neuen Tag.</h1>
@@ -312,7 +285,6 @@ ul{padding:0;list-style:none}
       <p class="status" id="recStatus" role="status">Tippe auf Aufnehmen und sprich den Satz laut und in Ruhe.</p>
       <div class="row" style="justify-content:center">
         <button class="btn" id="listenBtn" type="button" hidden>Anhören</button>
-        <button class="link" id="delBtn" type="button" hidden>Aufnahme löschen</button>
       </div>
       <div class="micpick" id="micPick" hidden>
         <label for="micSel">Mikrofon</label>
@@ -332,25 +304,16 @@ ul{padding:0;list-style:none}
         <p class="help">Fragt dein Handy nach dem Mikrofon, erlaube den Zugriff. Bleibt die Frage aus, ist das Mikrofon an diesem Ort gesperrt. Dann sprich den Satz in deiner Sprachmemo-App ein und hol ihn über „Datei wählen“.</p>
       </div>
     </details>
-    <div class="own" id="ownTools" hidden>
-      <label class="vh" for="ownName">Name des Sets</label>
-      <input id="ownName" type="text" maxlength="40" autocomplete="off" placeholder="Name des Sets">
-      <button class="link" id="ownShare" type="button">Set als Link teilen</button>
-      <p class="help" id="ownNote" role="status">Über den Link bekommt jemand deine Texte und spricht sie selbst ein. Aufnahmen werden nie geteilt.</p>
-    </div>
     <button class="btn primary wide" id="nextBtn" type="button">Überspringen</button>
   </section>
 
   <section class="screen" id="s-fertig" hidden>
     <div class="grow">
       <p class="eyebrow">Geschafft</p>
-      <h1 class="line" id="fertigHead">Deine erste Meditation ist fertig.</h1>
+      <h1 class="line">Deine erste Meditation ist fertig.</h1>
       <p class="sub" id="fertigSub">10 Sätze in deiner Stimme.</p>
     </div>
     <button class="btn primary wide" id="fertigGo" type="button">Jetzt anhören</button>
-    <div class="row" style="justify-content:center">
-      <button class="link" id="fertigMore" type="button" hidden>Weiter mit Teil 2</button>
-    </div>
   </section>
 
   <section class="screen" id="s-player" hidden>
@@ -367,9 +330,8 @@ ul{padding:0;list-style:none}
         <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
       </button>
     </div>
-    <p class="eyebrow" id="playGoal">Positive Gedanken · kraftvoll</p>
     <div class="now"><p class="line sm" id="playLine">Setz deine Kopfhörer auf und tippe auf Start.</p></div>
-    <p class="freq" id="freqLine">Binaural: links 200 Hz · rechts 210 Hz · 10 Hz Differenz (Alpha)</p>
+    <p class="freq">Binaural: links 200 Hz · rechts 210 Hz · 10 Hz Differenz (Alpha)</p>
     <fieldset class="chips">
       <legend>Dauer</legend>
       <input class="vh" type="radio" name="dauer" id="t10" value="10" checked><label for="t10">10 Min</label>
@@ -381,45 +343,15 @@ ul{padding:0;list-style:none}
       <input class="vh" type="checkbox" id="fxVoice" checked><label for="fxVoice">Weiche Stimme</label>
       <input class="vh" type="checkbox" id="fxMelody" checked><label for="fxMelody">Melodie</label>
     </fieldset>
-    <fieldset class="chips" id="moodBox">
-      <legend id="moodLegend">Stimmung vorher</legend>
-      <input class="vh" type="radio" name="mood" id="m1" value="1"><label for="m1">1</label>
-      <input class="vh" type="radio" name="mood" id="m2" value="2"><label for="m2">2</label>
-      <input class="vh" type="radio" name="mood" id="m3" value="3"><label for="m3">3</label>
-      <input class="vh" type="radio" name="mood" id="m4" value="4"><label for="m4">4</label>
-      <input class="vh" type="radio" name="mood" id="m5" value="5"><label for="m5">5</label>
-    </fieldset>
-    <p class="help" id="moodHelp">Freiwillig. 1 heißt niedrig, 5 heißt hoch.</p>
     <div class="sliders">
       <label for="volVoice">Stimme</label><input type="range" id="volVoice" min="0" max="100" value="80">
       <label for="volTone">Musik</label><input type="range" id="volTone" min="0" max="100" value="40">
     </div>
-    <details class="more" id="fineMore">
-      <summary>Feineinstellungen</summary>
-      <div class="more-body">
-        <fieldset class="chips">
-          <legend>Frequenz</legend>
-          <input class="vh" type="radio" name="beat" id="b10" value="10" checked><label for="b10">Alpha 10 Hz</label>
-          <input class="vh" type="radio" name="beat" id="b6" value="6"><label for="b6">Theta 6 Hz</label>
-          <input class="vh" type="radio" name="beat" id="b2" value="2"><label for="b2">Delta 2 Hz</label>
-        </fieldset>
-        <p class="help">Viele nutzen Alpha zum Entspannen, Theta für tiefe Meditation und Delta am Abend.</p>
-        <div class="sliders">
-          <label for="gapRange" id="gapLabel">Pause 4 s</label><input type="range" id="gapRange" min="3" max="8" step="1" value="4">
-        </div>
-        <fieldset class="chips">
-          <legend>Reihenfolge</legend>
-          <input class="vh" type="checkbox" id="mixBox"><label for="mixBox">Gemischt</label>
-        </fieldset>
-      </div>
-    </details>
     <p class="help" id="playerNote">Kein Ton? Dreh die Lautstärke am Handy hoch und schalte am iPhone den Stummschalter aus.</p>
     <div class="row spread">
       <button class="link" id="stopBtn" type="button">Session beenden</button>
-      <button class="link" id="exportBtn" type="button">Aufnahmen sichern</button>
       <button class="link" id="wipeBtn" type="button">Alle Aufnahmen löschen</button>
     </div>
-    <p class="help" id="toolNote" role="status" hidden></p>
   </section>
 
 </main>
@@ -438,181 +370,24 @@ var INTRO = [
   'Heute sagt sie dir zum ersten Mal etwas anderes.',
   'Setz deine Kopfhörer auf. Sprich zehn Sätze. Den Rest machen wir.'
 ];
-/* Die zehn Sätze der ersten Fassung. Ihre Aufnahmen liegen unter den Schlüsseln 0 bis 9 und bleiben dort, damit keine verloren geht. */
-var LEGACY = [0, 1, 4, 5, 12, 14, 19, 24, 26, 29];
-/* Ziele: je 30 Sätze in der Reihenfolge des Bogens, vom ruhigen Einstieg zum kraftvollen Schluss.
-   Vor dem Strich steht die kraftvolle Fassung, dahinter die sanfte. "first" sind die zehn Sätze von Teil 1. */
-var GOALS = [
-  { id: 'pos', name: 'Positive Gedanken', first: LEGACY, s: [
-    'Ich bin dankbar für diesen neuen Tag.|Ich erlaube mir, dankbar zu sein für diesen neuen Tag.',
-    'Ich bin offen für das Gute, das heute kommt.|Ich erlaube mir, offen zu sein für das Gute, das heute kommt.',
-    'Ich bin freundlich zu mir und anderen.|Ich erlaube mir, freundlich zu mir und anderen zu sein.',
-    'Ich bin neugierig auf das Leben.|Ich erlaube mir, neugierig auf das Leben zu sein.',
-    'Ich bin frei zu wählen, worauf ich schaue.|Ich erlaube mir zu wählen, worauf ich schaue.',
-    'Ich bin jemand, der das Gute bemerkt.|Ich erlaube mir, das Gute zu bemerken.',
-    'Ich bin gelassen bei Dingen, die ich nicht ändern kann.|Ich erlaube mir, gelassen zu sein bei Dingen, die ich nicht ändern kann.',
-    'Ich bin tatkräftig bei Dingen, die ich ändern kann.|Ich erlaube mir, anzupacken, was ich ändern kann.',
-    'Ich bin voller guter Ideen.|Ich erlaube mir, meinen Ideen Raum zu geben.',
-    'Ich bin ein Mensch, der andere zum Lächeln bringt.|Ich erlaube mir, andere zum Lächeln zu bringen.',
-    'Ich bin im Vertrauen, alles hat seine Zeit.|Ich erlaube mir zu vertrauen, alles hat seine Zeit.',
-    'Ich bin verbunden mit etwas Größerem als mir.|Ich erlaube mir, mich mit etwas Größerem verbunden zu fühlen.',
-    'Ich bin offen für schöne Überraschungen.|Ich erlaube mir, offen zu sein für schöne Überraschungen.',
-    'Ich bin großzügig mit Lob und Dank.|Ich erlaube mir, großzügig zu sein mit Lob und Dank.',
-    'Ich bin leicht im Herzen.|Ich erlaube mir, leicht im Herzen zu sein.',
-    'Ich bin im Einklang mit dem, was für mich bestimmt ist.|Ich erlaube mir, meinem Weg zu folgen.',
-    'Ich bin lernbereit, jeder Fehler bringt mich weiter.|Ich erlaube mir, aus Fehlern zu lernen.',
-    'Ich bin umgeben von Menschen, die mir guttun.|Ich erlaube mir, Menschen zu suchen, die mir guttun.',
-    'Ich bin frei von Groll.|Ich erlaube mir, Groll loszulassen.',
-    'Ich bin zuversichtlich.|Ich erlaube mir, zuversichtlich zu sein.',
-    'Ich bin gut darin, Lösungen zu sehen.|Ich erlaube mir, nach Lösungen zu schauen.',
-    'Ich bin dankbar für die kleinen Dinge.|Ich erlaube mir, dankbar zu sein für die kleinen Dinge.',
-    'Ich bin fröhlich ohne besonderen Grund.|Ich erlaube mir, fröhlich zu sein, ohne besonderen Grund.',
-    'Ich bin Licht für mich und andere.|Ich erlaube mir, Licht für mich und andere zu sein.',
-    'Ich bin genau richtig in diesem Moment.|Ich erlaube mir, genau richtig zu sein in diesem Moment.',
-    'Ich bin erfüllt von Freude.|Ich erlaube mir, Freude zu spüren.',
-    'Ich bin voller Vertrauen in meinen Weg.|Ich erlaube mir, meinem Weg zu vertrauen.',
-    'Ich bin Teil von etwas Schönem.|Ich erlaube mir, Teil von etwas Schönem zu sein.',
-    'Ich bin bereit, heute mein Bestes zu geben.|Ich erlaube mir, heute mein Bestes zu geben.',
-    'Ich bin glücklich, am Leben zu sein.|Ich erlaube mir, glücklich zu sein, am Leben zu sein.'
-  ] },
-  { id: 'wert', name: 'Selbstwert & Selbstliebe', first: [0, 1, 2, 4, 6, 12, 14, 19, 22, 29], s: [
-    'Ich bin genug, genau so, wie ich bin.|Ich erlaube mir, genug zu sein, genau so, wie ich bin.',
-    'Ich bin es wert, geliebt zu werden.|Ich erlaube mir zu glauben, dass ich es wert bin, geliebt zu werden.',
-    'Ich bin wertvoll, ohne etwas beweisen zu müssen.|Ich darf wertvoll sein, ohne etwas beweisen zu müssen.',
-    'Ich bin mein eigener sicherer Ort.|Ich erlaube mir, mein eigener sicherer Ort zu werden.',
-    'Ich bin sanft mit mir.|Ich erlaube mir, sanft mit mir zu sein.',
-    'Ich bin im Frieden mit meiner Vergangenheit.|Ich erlaube mir, Frieden mit meiner Vergangenheit zu schließen.',
-    'Ich bin mehr als meine Fehler.|Ich darf mehr sein als meine Fehler.',
-    'Ich bin liebevoll zu meinem Körper.|Ich erlaube mir, liebevoll zu meinem Körper zu sein.',
-    'Ich bin dankbar für alles, was mein Körper für mich tut.|Ich erlaube mir, dankbar zu sein für alles, was mein Körper für mich tut.',
-    'Ich bin es wert, dass man mir zuhört.|Ich darf erwarten, dass man mir zuhört.',
-    'Ich bin es wert, Raum einzunehmen.|Ich erlaube mir, Raum einzunehmen.',
-    'Ich bin frei von dem Urteil anderer.|Ich erlaube mir, das Urteil anderer loszulassen.',
-    'Ich bin gut zu mir, auch an schweren Tagen.|Ich erlaube mir, gut zu mir zu sein, auch an schweren Tagen.',
-    'Ich bin an meiner eigenen Seite.|Ich erlaube mir, an meiner eigenen Seite zu stehen.',
-    'Ich bin stolz auf den Weg, den ich gegangen bin.|Ich erlaube mir, stolz zu sein auf den Weg, den ich gegangen bin.',
-    'Ich bin richtig, so wie ich fühle.|Ich darf fühlen, was ich fühle.',
-    'Ich bin einzigartig, und das ist meine Stärke.|Ich erlaube mir, einzigartig zu sein.',
-    'Ich bin es wert, gut behandelt zu werden.|Ich darf erwarten, gut behandelt zu werden.',
-    'Ich bin klar in meinen Grenzen.|Ich erlaube mir, klare Grenzen zu setzen.',
-    'Ich bin frei, Nein zu sagen.|Ich erlaube mir, Nein zu sagen.',
-    'Ich bin bereit, mir selbst zu vergeben.|Ich erlaube mir, mir selbst zu vergeben.',
-    'Ich bin liebenswert an jedem einzelnen Tag.|Ich erlaube mir zu glauben, dass ich liebenswert bin.',
-    'Ich bin zu Hause in mir.|Ich erlaube mir, in mir zu Hause zu sein.',
-    'Ich bin wichtig für diese Welt.|Ich erlaube mir zu glauben, dass ich wichtig bin.',
-    'Ich bin ein Geschenk für die Menschen um mich.|Ich darf ein Geschenk für die Menschen um mich sein.',
-    'Ich bin schön auf meine eigene Art.|Ich erlaube mir, mich schön zu finden, auf meine eigene Art.',
-    'Ich bin vollständig, mir fehlt nichts.|Ich erlaube mir, mich vollständig zu fühlen.',
-    'Ich bin die Liebe, die ich gesucht habe.|Ich erlaube mir, mir selbst die Liebe zu geben, die ich suche.',
-    'Ich bin meine erste Wahl.|Ich erlaube mir, meine erste Wahl zu sein.',
-    'Ich bin ganz und gar ich, und das ist gut.|Ich erlaube mir, ganz und gar ich zu sein.'
-  ] },
-  { id: 'fuelle', name: 'Reichtum & Fülle', first: [0, 1, 3, 4, 8, 9, 14, 16, 24, 29], s: [
-    'Ich bin dankbar für das, was schon da ist.|Ich erlaube mir, dankbar zu sein für das, was schon da ist.',
-    'Ich bin offen für neue Wege zu Geld und Erfolg.|Ich erlaube mir, offen zu sein für neue Wege zu Geld und Erfolg.',
-    'Ich bin es wert, im Überfluss zu leben.|Ich erlaube mir zu glauben, dass ich Fülle verdiene.',
-    'Ich bin bereit zu empfangen.|Ich erlaube mir zu empfangen.',
-    'Ich bin im Frieden mit Geld.|Ich erlaube mir, Frieden mit Geld zu schließen.',
-    'Ich bin frei von altem Mangeldenken.|Ich erlaube mir, altes Mangeldenken loszulassen.',
-    'Ich bin ein Magnet für Chancen.|Ich erlaube mir, Chancen zu sehen und anzunehmen.',
-    'Ich bin reich an Ideen.|Ich erlaube mir, meinen Ideen zu vertrauen.',
-    'Ich bin gut im Umgang mit Geld.|Ich erlaube mir, gut mit Geld umzugehen.',
-    'Ich bin es wert, gut bezahlt zu werden.|Ich darf gut bezahlt werden.',
-    'Ich bin klar in meinen finanziellen Zielen.|Ich erlaube mir, klare finanzielle Ziele zu haben.',
-    'Ich bin mutig genug, meinen Preis zu nennen.|Ich erlaube mir, meinen Preis zu nennen.',
-    'Ich bin der Mensch, dem Gutes gelingt.|Ich erlaube mir zu glauben, dass mir Gutes gelingt.',
-    'Ich bin großzügig, weil genug für alle da ist.|Ich erlaube mir, großzügig zu sein.',
-    'Ich bin frei, groß zu denken.|Ich erlaube mir, groß zu denken.',
-    'Ich bin zur richtigen Zeit am richtigen Ort.|Ich erlaube mir zu vertrauen, dass ich am richtigen Ort bin.',
-    'Ich bin umgeben von Möglichkeiten.|Ich erlaube mir, die Möglichkeiten um mich zu sehen.',
-    'Ich bin wertvoll, und meine Arbeit ist es auch.|Ich erlaube mir, den Wert meiner Arbeit zu sehen.',
-    'Ich bin bereit für mehr.|Ich erlaube mir, mehr zu wollen.',
-    'Ich bin diszipliniert und baue Schritt für Schritt auf.|Ich erlaube mir, Schritt für Schritt aufzubauen.',
-    'Ich bin entspannt, wenn ich an Geld denke.|Ich erlaube mir, entspannt an Geld zu denken.',
-    'Ich bin die Quelle meines Wohlstands.|Ich erlaube mir, meinen Wohlstand selbst zu gestalten.',
-    'Ich bin offen für Einkommen aus vielen Quellen.|Ich erlaube mir, offen zu sein für Einkommen aus vielen Quellen.',
-    'Ich bin dankbar für jeden Euro, der zu mir kommt.|Ich erlaube mir, dankbar zu sein für jeden Euro, der zu mir kommt.',
-    'Ich bin sicher und versorgt.|Ich erlaube mir, mich sicher und versorgt zu fühlen.',
-    'Ich bin erfolgreich in dem, was ich tue.|Ich erlaube mir, erfolgreich zu sein in dem, was ich tue.',
-    'Ich bin frei, mein Leben nach meinen Wünschen zu gestalten.|Ich erlaube mir, mein Leben nach meinen Wünschen zu gestalten.',
-    'Ich bin reich an Zeit, Liebe und Möglichkeiten.|Ich erlaube mir, meinen Reichtum an Zeit, Liebe und Möglichkeiten zu sehen.',
-    'Ich bin in Fülle, jetzt.|Ich erlaube mir, die Fülle zu spüren, die schon da ist.',
-    'Ich bin bereit für das Leben, das auf mich wartet.|Ich erlaube mir, bereit zu sein für das Leben, das auf mich wartet.'
-  ] },
-  { id: 'ruhe', name: 'Innere Ruhe & Schlaf', first: [0, 1, 2, 4, 6, 7, 10, 19, 24, 29], s: [
-    'Ich bin hier, in diesem Atemzug.|Ich erlaube mir, hier zu sein, in diesem Atemzug.',
-    'Ich bin ruhig.|Ich erlaube mir, ruhig zu werden.',
-    'Ich bin sicher.|Ich erlaube mir, mich sicher zu fühlen.',
-    'Ich bin angekommen.|Ich erlaube mir anzukommen.',
-    'Ich bin bereit, den Tag loszulassen.|Ich erlaube mir, den Tag loszulassen.',
-    'Ich bin frei von allem, was heute war.|Ich erlaube mir, alles abzulegen, was heute war.',
-    'Ich bin weich in Schultern, Kiefer und Stirn.|Ich erlaube mir, Schultern, Kiefer und Stirn weich werden zu lassen.',
-    'Ich bin schwer und warm.|Ich erlaube mir, schwer und warm zu werden.',
-    'Ich bin getragen.|Ich erlaube mir, mich tragen zu lassen.',
-    'Ich bin still.|Ich erlaube mir, still zu werden.',
-    'Ich bin größer als meine Gedanken.|Ich erlaube mir, meine Gedanken ziehen zu lassen.',
-    'Ich bin der Himmel, Gedanken sind nur Wolken.|Ich darf der Himmel sein, Gedanken sind nur Wolken.',
-    'Ich bin nachsichtig mit mir.|Ich erlaube mir, nachsichtig mit mir zu sein.',
-    'Ich bin im Frieden mit dem, was offen bleibt.|Ich erlaube mir, offen zu lassen, was offen bleibt.',
-    'Ich bin ruhig, auch wenn es um mich laut ist.|Ich erlaube mir, ruhig zu bleiben, auch wenn es um mich laut ist.',
-    'Ich bin sicher in meinem Körper.|Ich erlaube mir, mich in meinem Körper sicher zu fühlen.',
-    'Ich bin langsam, und das ist gut.|Ich erlaube mir, langsam zu sein.',
-    'Ich bin geborgen in dieser Nacht.|Ich erlaube mir, mich in dieser Nacht geborgen zu fühlen.',
-    'Ich bin versöhnt mit diesem Tag.|Ich erlaube mir, mich mit diesem Tag zu versöhnen.',
-    'Ich bin fertig für heute.|Ich erlaube mir, für heute fertig zu sein.',
-    'Ich bin frei von Eile.|Ich erlaube mir, die Eile loszulassen.',
-    'Ich bin ganz bei mir.|Ich erlaube mir, ganz bei mir zu sein.',
-    'Ich bin tief entspannt.|Ich erlaube mir, tief zu entspannen.',
-    'Ich bin müde auf eine gute Art.|Ich erlaube mir, müde zu sein.',
-    'Ich bin bereit für erholsamen Schlaf.|Ich erlaube mir, in den Schlaf zu sinken.',
-    'Ich bin leicht wie mein Atem.|Ich erlaube mir, leicht zu werden wie mein Atem.',
-    'Ich bin in Sicherheit, ich darf loslassen.|Ich bin in Sicherheit, ich erlaube mir loszulassen.',
-    'Ich bin eins mit der Stille.|Ich erlaube mir, in die Stille zu sinken.',
-    'Ich bin Ruhe.|Ich erlaube mir Ruhe.',
-    'Ich bin Frieden.|Ich erlaube mir Frieden.'
-  ] },
-  { id: 'fokus', name: 'Selbstvertrauen & Fokus', first: [0, 1, 2, 5, 6, 8, 11, 17, 20, 29], s: [
-    'Ich bin wach und klar.|Ich erlaube mir, wach und klar zu sein.',
-    'Ich bin bereit für diesen Tag.|Ich erlaube mir, bereit zu sein für diesen Tag.',
-    'Ich bin ganz bei der einen Sache vor mir.|Ich erlaube mir, ganz bei der einen Sache vor mir zu sein.',
-    'Ich bin fähig, Schwieriges zu lernen.|Ich erlaube mir, Schwieriges in meinem Tempo zu lernen.',
-    'Ich bin gut vorbereitet.|Ich erlaube mir, meiner Vorbereitung zu vertrauen.',
-    'Ich bin ruhig unter Druck.|Ich erlaube mir, unter Druck ruhig zu atmen.',
-    'Ich bin mutig genug für den nächsten Schritt.|Ich erlaube mir, den nächsten Schritt zu gehen.',
-    'Ich bin stärker als jeder Zweifel.|Ich erlaube mir, trotz Zweifel weiterzugehen.',
-    'Ich bin klar in dem, was ich will.|Ich erlaube mir zu wissen, was ich will.',
-    'Ich bin jemand, der Dinge zu Ende bringt.|Ich erlaube mir, Dinge zu Ende zu bringen.',
-    'Ich bin diszipliniert, auch wenn niemand zusieht.|Ich erlaube mir, dranzubleiben, auch wenn niemand zusieht.',
-    'Ich bin sicher in meiner Stimme.|Ich erlaube mir, meiner Stimme zu vertrauen.',
-    'Ich bin überzeugend, wenn ich spreche.|Ich erlaube mir, mit Überzeugung zu sprechen.',
-    'Ich bin gelassen, wenn andere mich ansehen.|Ich erlaube mir, gelassen zu bleiben, wenn andere mich ansehen.',
-    'Ich bin schnell wieder auf den Beinen, wenn ich falle.|Ich erlaube mir, zu fallen und wieder aufzustehen.',
-    'Ich bin offen für Kritik und wachse daran.|Ich erlaube mir, an Kritik zu wachsen.',
-    'Ich bin entschlossen.|Ich erlaube mir, mich zu entscheiden.',
-    'Ich bin konzentriert und lasse Ablenkung ziehen.|Ich erlaube mir, Ablenkung ziehen zu lassen.',
-    'Ich bin achtsam mit meiner Zeit.|Ich erlaube mir, achtsam mit meiner Zeit umzugehen.',
-    'Ich bin stolz auf das, was ich schon geschafft habe.|Ich erlaube mir, stolz zu sein auf das, was ich schon geschafft habe.',
-    'Ich bin mutig, auch mit Herzklopfen.|Ich erlaube mir, mutig zu sein, auch mit Herzklopfen.',
-    'Ich bin die Person, die ihr Leben gestaltet.|Ich erlaube mir, mein Leben zu gestalten.',
-    'Ich bin verlässlich für mich selbst.|Ich erlaube mir, mich auf mich zu verlassen.',
-    'Ich bin kreativ und finde Lösungen.|Ich erlaube mir, kreativ nach Lösungen zu suchen.',
-    'Ich bin bereit, sichtbar zu sein.|Ich erlaube mir, sichtbar zu sein.',
-    'Ich bin ausdauernd.|Ich erlaube mir, in meinem Tempo dranzubleiben.',
-    'Ich bin voller Energie.|Ich erlaube mir, meine Energie zu spüren.',
-    'Ich bin meinem Ziel heute einen Schritt näher.|Ich erlaube mir, heute einen Schritt auf mein Ziel zuzugehen.',
-    'Ich bin unaufhaltsam, wenn ich mich entscheide.|Ich erlaube mir, entschieden loszugehen.',
-    'Ich bin bereit, ich fange an.|Ich erlaube mir anzufangen.'
-  ] }
+var SENTENCES = [
+  'Ich bin dankbar für diesen neuen Tag.',
+  'Ich bin offen für das Gute, das heute kommt.',
+  'Ich bin frei zu wählen, worauf ich schaue.',
+  'Ich bin jemand, der das Gute bemerkt.',
+  'Ich bin offen für schöne Überraschungen.',
+  'Ich bin leicht im Herzen.',
+  'Ich bin zuversichtlich.',
+  'Ich bin genau richtig in diesem Moment.',
+  'Ich bin voller Vertrauen in meinen Weg.',
+  'Ich bin glücklich, am Leben zu sein.'
 ];
-var OWN_ID = 'eigen'; // das eigene Set: bis zu zehn selbst geschriebene Sätze
-var N = 10;           // Sätze je Teil
-var PARTS = 3;        // Teile je Ziel
-var PLUS_OPEN = true; // Testphase: alles frei. Mit false bleibt nur Teil 1 von „Positive Gedanken“ in der kraftvollen Fassung offen.
+var N = SENTENCES.length;
+var GAP = 4;          // Sekunden Pause zwischen zwei Sätzen
 var SILENT_DUR = 5;   // Anzeigedauer für Sätze ohne Aufnahme
-var BEATS = { 10: 'Alpha', 6: 'Theta', 2: 'Delta' };
 var SCREENS = ['intro','hinweise','ziel','plus','aufnahme','fertig','player'];
 var APP_URL = 'https://marcsmidt99-design.github.io/ich-bin/';
-var VERSION = 7;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
+var VERSION = 6;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
 
 function $(id){ return document.getElementById(id); }
 
@@ -657,98 +432,15 @@ function idbLoadAll(){
 }
 
 /* ---------- Zustand ---------- */
-/* Jeder Satz hat einen Schlüssel aus Ziel, Fassung und Platz im Bogen, zum Beispiel "wert.s.4".
-   "bank" hält alle Aufnahmen, "page" die zehn Schlüssel, die gerade zum Einsprechen offen sind. */
-function clean(s){ return String(s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90); }
-var custom = store.get('ichbin.texts2', null);
-if(!custom || typeof custom !== 'object' || Array.isArray(custom)) custom = {};
-var own = store.get('ichbin.own', null);
-if(!own || typeof own !== 'object' || !Array.isArray(own.texts)) own = { name: '', texts: [] };
-own.name = clean(typeof own.name === 'string' ? own.name : '').slice(0, 40);
-own.texts = own.texts.slice(0, N).map(function(t){ return typeof t === 'string' ? clean(t) : ''; });
-while(own.texts.length < N) own.texts.push('');
-var bank = {};        // Schlüssel -> {blob, buffer, gain, dur}
-var page = [];
-var part = 0;
+var texts = store.get('ichbin.texts', null);
+if(!Array.isArray(texts) || texts.length !== N) texts = SENTENCES.slice();
+var recs = new Array(N).fill(null);   // {blob, buffer, gain, dur}
 var cur = 0;
 var current = 'intro';
 var ip = 0;
 
-function goalById(id){ for(var i = 0; i < GOALS.length; i++) if(GOALS[i].id === id) return GOALS[i]; return null; }
-var goal = store.get('ichbin.goal', 'pos');
-if(goal !== OWN_ID && !goalById(goal)) goal = 'pos';
-var level = store.get('ichbin.level', 'k') === 's' ? 's' : 'k';
-var beat = Number(store.get('ichbin.beat', 10)); if(!BEATS[beat]) beat = 10;
-var gap = Math.round(Number(store.get('ichbin.gap', 4))); if(!(gap >= 3 && gap <= 8)) gap = 4;
-var mix = store.get('ichbin.mix', false) === true;
-
-/* Geänderte Texte der ersten Fassung einmal übernehmen */
-(function(){
-  var old = store.get('ichbin.texts', null);
-  if(!Array.isArray(old) || old.length !== LEGACY.length || store.get('ichbin.texts.moved', false)) return;
-  old.forEach(function(t, n){
-    var def = GOALS[0].s[LEGACY[n]].split('|')[0];
-    if(typeof t === 'string' && clean(t) && clean(t) !== def && !custom['pos.k.' + LEGACY[n]]) custom['pos.k.' + LEGACY[n]] = clean(t);
-  });
-  store.set('ichbin.texts2', custom); store.set('ichbin.texts.moved', true);
-})();
-
-function skey(gid, lv, idx){ return gid + '.' + (gid === OWN_ID ? 'x' : lv) + '.' + idx; }
-/* Die Plätze eines Teils im Bogen: Teil 1 ist eine Auswahl über den ganzen Bogen, Teil 2 und 3 teilen sich den Rest. */
-function partIdx(g, p){
-  if(p === 0) return g.first.slice();
-  var rest = [];
-  for(var i = 0; i < g.s.length; i++) if(g.first.indexOf(i) === -1) rest.push(i);
-  return rest.slice((p - 1) * N, p * N);
-}
-function goalKeys(gid, lv){
-  var out = [], n = gid === OWN_ID ? N : goalById(gid).s.length;
-  for(var i = 0; i < n; i++) out.push(skey(gid, lv, i));
-  return out;
-}
-function firstKeys(gid, lv){
-  if(gid === OWN_ID) return goalKeys(gid, lv);
-  return partIdx(goalById(gid), 0).map(function(i){ return skey(gid, lv, i); });
-}
-function allKeys(){
-  var out = [];
-  GOALS.forEach(function(g){ out = out.concat(goalKeys(g.id, 'k'), goalKeys(g.id, 's')); });
-  return out.concat(goalKeys(OWN_ID, 'x'));
-}
-function goalSize(gid){ return gid === OWN_ID ? N : goalById(gid).s.length; }
-function goalName(gid){ return gid === OWN_ID ? (own.name || 'Eigene Sätze') : goalById(gid).name; }
-function goalLabel(){ return goalName(goal) + (goal === OWN_ID ? '' : (level === 's' ? ' · sanft' : ' · kraftvoll')); }
-function countGoal(gid, lv){ return goalKeys(gid, lv).filter(function(k){ return bank[k]; }).length; }
-function defText(key){
-  var p = key.split('.'), idx = Number(p[2]);
-  if(p[0] === OWN_ID) return own.texts[idx] || '';
-  var g = goalById(p[0]);
-  if(!g || !g.s[idx]) return '';
-  return g.s[idx].split('|')[p[1] === 's' ? 1 : 0];
-}
-function textOf(key){ return (key.indexOf(OWN_ID + '.') !== 0 && custom[key]) || defText(key); }
-function setText(key, v){
-  var p = key.split('.');
-  if(p[0] === OWN_ID){ own.texts[Number(p[2])] = v; store.set('ichbin.own', own); }
-  else if(v){ custom[key] = v; store.set('ichbin.texts2', custom); }
-}
-/* Unter welchem Schlüssel eine Aufnahme gespeichert ist. Die zehn Sätze der ersten Fassung behalten 0 bis 9. */
-function dbKey(key){
-  var p = key.split('.');
-  if(p[0] === 'pos' && p[1] === 'k'){ var n = LEGACY.indexOf(Number(p[2])); if(n !== -1) return n; }
-  return key;
-}
-function locked(gid, lv, p){ return !PLUS_OPEN && !(gid === 'pos' && lv === 'k' && p === 0); }
-function setPage(){
-  if(goal === OWN_ID){ part = 0; page = goalKeys(OWN_ID, 'x'); }
-  else page = partIdx(goalById(goal), part).map(function(i){ return skey(goal, level, i); });
-}
-function recAt(i){ return bank[page[i]] || null; }
-function count(){ return page.filter(function(k){ return bank[k]; }).length; }
-function firstOpen(){ for(var i = 0; i < N; i++) if(!recAt(i)) return i; return 0; }
+function count(){ return recs.filter(Boolean).length; }
 function fmtDur(s){ return s.toFixed(1).replace('.', ',') + ' s'; }
-function fmtNum(x){ return x.toFixed(1).replace('.', ','); }
-setPage();
 
 /* ---------- Audio ---------- */
 var ctx = null, master = null, voiceGain = null, toneGain = null;
@@ -898,8 +590,8 @@ function prepare(blob){
     return { buffer: out, gain: gain, dur: out.duration };
   });
 }
-function ensureBuffer(key){
-  var r = bank[key];
+function ensureBuffer(i){
+  var r = recs[i];
   if(!r) return Promise.resolve(null);
   if(r.buffer) return Promise.resolve(r);
   return prepare(r.blob).then(function(p){ r.buffer = p.buffer; r.gain = p.gain; r.dur = p.dur; return r; })
@@ -912,7 +604,7 @@ function stopPreview(){ if(previewSrc){ try{ previewSrc.stop(); }catch(e){} prev
 function preview(i){
   stopPreview();
   wake();
-  ensureBuffer(page[i]).then(function(r){
+  ensureBuffer(i).then(function(r){
     if(!r){ setStatus('Diese Aufnahme lässt sich nicht abspielen. Nimm den Satz neu auf.', true); return; }
     resumeAudio();
     var s = ctx.createBufferSource(), g = ctx.createGain();
@@ -957,14 +649,12 @@ function startBed(opts){
   padVoice(TONIC * 3 / 2, 0.1, 0.21, 0.057);
   padVoice(TONIC * 2, 0.045, 0.3, 0.071);
 
-  /* Binaurales Tonpaar: 200 Hz nur links, rechts je nach Frequenz 210, 206 oder 202 Hz. Ohne Hall, damit die Ohren getrennt bleiben. */
-  var right = null;
+  /* Binaurales Tonpaar: 200 Hz nur links, 210 Hz nur rechts. Ohne Hall, damit die Ohren getrennt bleiben. */
   if(opts.binaural){
     carrier = bus();
     var cm = c.createChannelMerger(2);
-    [200, 200 + beat].forEach(function(f, side){
+    [200, 210].forEach(function(f, side){
       var o = c.createOscillator(), g = c.createGain();
-      if(side === 1) right = o;
       o.type = 'sine'; o.frequency.value = f; g.gain.value = 0.5;
       o.connect(g); g.connect(cm, 0, side); o.start(now); oscs.push(o);
     });
@@ -999,7 +689,6 @@ function startBed(opts){
   }, 250);
 
   return {
-    setBeat: function(b){ if(right) right.frequency.setTargetAtTime(200 + b, c.currentTime, 0.4); },
     stop: function(fade){
       clearInterval(timer);
       var t = c.currentTime, live = c.state === 'running', all = [padBus, melBus, carrier];
@@ -1034,7 +723,7 @@ function renderPadToggle(){
 }
 
 /* ---------- Session ---------- */
-var P = { started: false, playing: false, idx: -1, list: [], nextAt: 0, startAt: 0, endAt: 0, src: null, bed: null, tick: null, fading: false, lock: null, marked: false, played: 0 };
+var P = { started: false, playing: false, idx: -1, list: [], nextAt: 0, startAt: 0, endAt: 0, src: null, bed: null, tick: null, fading: false, lock: null, marked: false };
 var RING = 339.3;
 function setRing(frac){ $('ring').style.strokeDashoffset = (RING * (1 - Math.max(0, Math.min(1, frac)))).toFixed(1); }
 
@@ -1049,55 +738,17 @@ function setPlaying(on){
   $('s-player').classList.toggle('playing', on);
   $('playBtn').setAttribute('aria-label', on ? 'Pause' : 'Abspielen');
 }
-function shuffle(a){
-  for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
-  return a;
-}
-
-/* Stimmung vor und nach der Session, freiwillig. Bleibt wie alles andere auf dem Gerät. */
-var mood = { phase: 'before', before: null, entry: null, saved: false };
-function loadMoods(){ var m = store.get('ichbin.moods', []); return Array.isArray(m) ? m : []; }
-function moodPick(){ var r = document.querySelector('input[name="mood"]:checked'); return r ? Number(r.value) : null; }
-function moodPhase(after){
-  mood.phase = after ? 'after' : 'before';
-  if(!after){ mood.entry = null; mood.saved = false; }
-  Array.prototype.forEach.call(document.querySelectorAll('input[name="mood"]'), function(r){ r.checked = false; });
-  $('moodLegend').textContent = after ? 'Stimmung nachher' : 'Stimmung vorher';
-  $('moodHelp').textContent = 'Freiwillig. 1 heißt niedrig, 5 heißt hoch.';
-  $('moodBox').hidden = false; $('moodHelp').hidden = false;
-}
-function moodDone(){
-  mood.entry = { d: dayKey(new Date()), g: goal, b: mood.before, a: null };
-  mood.saved = false;
-  if(mood.before != null){
-    var list = loadMoods(); list.push(mood.entry);
-    store.set('ichbin.moods', list.slice(-200)); mood.saved = true;
-  }
-  moodPhase(true);
-}
-function moodStats(){
-  var n = 0, b = 0, a = 0;
-  loadMoods().forEach(function(m){
-    if(m && typeof m.b === 'number' && typeof m.a === 'number'){ n++; b += m.b; a += m.a; }
-  });
-  return { n: n, b: n ? b / n : 0, a: n ? a / n : 0 };
-}
-
 function startSession(){
   var c = wake();
   if(!c){ $('playLine').textContent = 'Dieser Browser kann hier keinen Ton abspielen.'; return; }
   stopPreview();
   $('playLine').textContent = 'Einen Moment …';
-  mood.before = mood.phase === 'before' ? moodPick() : null;
-  mood.entry = null;
-  $('moodBox').hidden = true; $('moodHelp').hidden = true;
-  var keys = goalKeys(goal, level).filter(function(k){ return bank[k]; });
+  var idxs = [];
+  for(var i = 0; i < N; i++) if(recs[i]) idxs.push(i);
   c.resume();
-  Promise.all(keys.map(ensureBuffer)).then(function(){
-    var list = keys.filter(function(k){ return bank[k] && bank[k].buffer; }).map(function(k){ return { key: k, rec: bank[k] }; });
-    /* Ohne Aufnahme: die Sätze von Teil 1 zum Mitlesen */
-    if(!list.length) list = firstKeys(goal, level).filter(textOf).map(function(k){ return { key: k, rec: null }; });
-    if(mix) shuffle(list);
+  Promise.all(idxs.map(ensureBuffer)).then(function(){
+    var list = idxs.filter(function(i){ return recs[i] && recs[i].buffer; }).map(function(i){ return { i: i, rec: recs[i] }; });
+    if(!list.length) list = texts.map(function(t, i){ return { i: i, rec: null }; });
     P.list = list;
     var now = c.currentTime;
     duck.gain.cancelScheduledValues(now); duck.gain.setValueAtTime(1, now);
@@ -1133,9 +784,7 @@ function tick(){
   if(!P.fading && t >= P.nextAt) advance();
 }
 function advance(){
-  if(!P.list.length){ P.nextAt = ctx.currentTime + 60; return; }
-  P.idx++;
-  if(P.idx >= P.list.length){ P.idx = 0; if(mix && P.list.length > 2) shuffle(P.list); }
+  P.idx = (P.idx + 1) % P.list.length;
   var it = P.list[P.idx], t = ctx.currentTime + 0.05, dur = SILENT_DUR;
   if(it.rec){
     var s = ctx.createBufferSource(), g = ctx.createGain();
@@ -1146,17 +795,17 @@ function advance(){
     duck.gain.setTargetAtTime(0.6, t, 0.25);
     duck.gain.setTargetAtTime(1, t + dur + 0.2, 0.7);
   }
-  P.nextAt = t + dur + gap;
+  P.nextAt = t + dur + GAP;
   var line = $('playLine');
-  line.textContent = textOf(it.key);
+  line.textContent = texts[it.i];
   line.classList.remove('in'); void line.offsetWidth; line.classList.add('in');
 }
 function stopSession(){
   if(!P.started) return;
   clearInterval(P.tick); P.tick = null;
   var running = ctx.state === 'running', t = ctx.currentTime, at = running ? t + 0.3 : 0;
-  P.played = Math.min(t, P.endAt) - P.startAt;
-  if(P.played >= 30) addStats(P.played);
+  var played = Math.min(t, P.endAt) - P.startAt;
+  if(played >= 30) addStats(played);
   if(running){
     master.gain.cancelScheduledValues(t);
     master.gain.setValueAtTime(master.gain.value, t);
@@ -1184,7 +833,6 @@ function finish(){
   if(!P.marked){ P.marked = true; markDay(); }
   stopSession();
   $('playLine').textContent = 'Session beendet. Lass die Ruhe noch einen Moment wirken.';
-  moodDone();
 }
 
 /* ---------- Bildschirme ---------- */
@@ -1259,22 +907,16 @@ function reportText(){
   var passed = Math.max(1, Math.min(7, Math.round((keyDate(dayKey(new Date())) - start) / 864e5) + 1));
   var s = store.get('ichbin.stats', null);
   if(!s || typeof s.sessions !== 'number' || typeof s.secs !== 'number') s = { sessions: 0, secs: 0 };
-  var goals = [];
-  GOALS.map(function(g){ return g.id; }).concat([OWN_ID]).forEach(function(id){
-    var c = id === OWN_ID ? countGoal(id, 'x') : countGoal(id, 'k') + countGoal(id, 's');
-    if(c) goals.push(goalName(id) + ' ' + c);
-  });
-  var m = moodStats();
-  var lines = [
+  return [
     'Ich bin · Rückmeldung',
     'Gehört an ' + week.length + ' von ' + (passed < 7 ? 'bisher ' + passed : '7') + (passed === 1 ? ' Tag' : ' Tagen') + ' (Start ' + shortDay(first) + ')',
     'Tage: ' + (week.length ? week.map(shortDay).join(', ') : 'noch keiner'),
     'Sessions: ' + s.sessions + ' · Minuten: ' + Math.round(s.secs / 60),
-    'Sätze in meiner Stimme: ' + Object.keys(bank).length + (goals.length ? ' (' + goals.join(', ') + ')' : '')
-  ];
-  if(m.n) lines.push('Stimmung: vorher ' + fmtNum(m.b) + ' · nachher ' + fmtNum(m.a) + ' (' + m.n + (m.n === 1 ? ' Session' : ' Sessions') + ')');
-  lines.push('Version ' + VERSION, '', 'Das möchte ich noch sagen: ');
-  return lines.join('\n');
+    'Sätze in meiner Stimme: ' + count() + ' von ' + N,
+    'Version ' + VERSION,
+    '',
+    'Das möchte ich noch sagen: '
+  ].join('\n');
 }
 /* Ruhiger Sternenhimmel im Hintergrund, einmal gezeichnet */
 function sky(){
@@ -1294,98 +936,10 @@ function sky(){
 }
 function renderZiel(){
   renderDays();
-  var m = moodStats();
-  $('moodLine').hidden = !m.n;
-  if(m.n) $('moodLine').textContent = 'Stimmung im Schnitt: vorher ' + fmtNum(m.b) + ', nachher ' + fmtNum(m.a) + '.';
-  renderOffer();
-  var box = $('cats');
-  box.textContent = '';
-  GOALS.map(function(g){ return g.id; }).concat([OWN_ID]).forEach(function(id){
-    var li = document.createElement('li'), b = document.createElement('button');
-    var name = document.createElement('span'), note = document.createElement('span');
-    var c = countGoal(id, level), size = goalSize(id);
-    b.type = 'button';
-    b.className = 'cat' + (id === goal ? ' open' : '');
-    b.dataset.goal = id;
-    b.setAttribute('aria-pressed', id === goal ? 'true' : 'false');
-    name.className = 'cat-name'; name.textContent = goalName(id);
-    note.className = 'cat-note';
-    note.textContent = c ? c + ' von ' + size + ' aufgenommen' : (id === OWN_ID && !own.texts.some(Boolean) ? 'Schreib dein eigenes Set' : size + ' Sätze');
-    b.appendChild(name); b.appendChild(note); li.appendChild(b); box.appendChild(li);
-  });
-  $('lvK').checked = level === 'k'; $('lvS').checked = level === 's';
-  $('levelBox').hidden = goal === OWN_ID;
-  $('levelHelp').textContent = goal === OWN_ID
-    ? 'Dein eigenes Set: bis zu zehn Sätze, die du selbst schreibst oder per Link bekommst.'
-    : 'Kraftvoll: „Ich bin …“. Sanft: „Ich erlaube mir …“. Wer zweifelt, fängt sanft an.';
-  var c = countGoal(goal, level);
+  var c = count();
+  $('catNote').textContent = c === 0 ? '10 Sätze' : c + ' von ' + N + ' aufgenommen';
   $('zielPlay').hidden = c === 0;
-  $('zielRec').className = c ? 'btn' : 'btn primary';
-  $('zielRec').textContent = c ? 'Sätze bearbeiten' : 'Sätze einsprechen';
 }
-function pickGoal(id){
-  if(id !== OWN_ID && !goalById(id)) return;
-  if(locked(id, level, 0)){ show('plus'); return; }
-  goal = id; store.set('ichbin.goal', goal);
-  part = 0; setPage(); renderZiel();
-}
-/* Zum Einsprechen: den ersten Teil öffnen, in dem noch ein Satz fehlt */
-function openRec(){
-  if(goal !== OWN_ID){
-    var found = false;
-    for(var p = 0; p < PARTS && !found; p++){
-      part = p; setPage();
-      if(count() < N && !locked(goal, level, p)) found = true;
-    }
-    if(!found) part = 0;
-  }
-  setPage();
-  cur = firstOpen();
-  show('aufnahme');
-}
-
-/* Ein Set, das über einen Link kam: erst fragen, dann übernehmen */
-var offered = null;
-function readSet(hash){
-  var m = /^#set=([A-Za-z0-9_-]{4,6000})$/.exec(hash || '');
-  if(!m) return null;
-  try{
-    var b = m[1].replace(/-/g, '+').replace(/_/g, '/');
-    while(b.length % 4) b += '=';
-    var o = JSON.parse(decodeURIComponent(escape(atob(b))));
-    if(!o || !Array.isArray(o.t)) return null;
-    var t = o.t.filter(function(x){ return typeof x === 'string'; }).map(clean).filter(Boolean).slice(0, N);
-    if(!t.length) return null;
-    return { name: clean(typeof o.n === 'string' ? o.n : '').slice(0, 40), texts: t };
-  }catch(e){ return null; }
-}
-function ownLink(){
-  var json = JSON.stringify({ n: own.name || '', t: own.texts.filter(Boolean) });
-  return APP_URL + '#set=' + btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-function clearHash(){ try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){} }
-function renderOffer(){
-  $('offer').hidden = !offered;
-  if(!offered) return;
-  var n = offered.texts.length, has = own.texts.some(Boolean) || countGoal(OWN_ID, 'x') > 0;
-  $('offerText').textContent = 'Du hast ein Set bekommen' + (offered.name ? ': „' + offered.name + '“' : '') +
-    ' mit ' + (n === 1 ? 'einem Satz' : n + ' Sätzen') + '. Wenn du es übernimmst, sprichst du die Sätze selbst ein.' +
-    (has ? ' Deine bisherigen eigenen Sätze und ihre Aufnahmen werden dabei ersetzt.' : '');
-}
-function takeOffer(){
-  if(!offered) return;
-  var keys = goalKeys(OWN_ID, 'x');
-  keys.forEach(function(k){ delete bank[k]; });
-  idbWrite(function(s){ keys.forEach(function(k){ s.delete(dbKey(k)); }); });
-  own = { name: offered.name, texts: offered.texts.slice() };
-  while(own.texts.length < N) own.texts.push('');
-  store.set('ichbin.own', own);
-  offered = null; clearHash();
-  goal = OWN_ID; store.set('ichbin.goal', goal);
-  part = 0; setPage(); renderZiel();
-}
-function dropOffer(){ offered = null; clearHash(); renderOffer(); }
-
 function setStatus(msg, bad){
   var s = $('recStatus');
   s.textContent = msg;
@@ -1397,69 +951,39 @@ function renderSegs(){
   for(var i = 0; i < N; i++){
     var b = document.createElement('button');
     b.type = 'button';
-    b.className = 'seg' + (recAt(i) ? ' done' : '') + (i === cur ? ' cur' : '');
-    b.setAttribute('aria-label', 'Satz ' + (i + 1) + (recAt(i) ? ', aufgenommen' : ', offen'));
+    b.className = 'seg' + (recs[i] ? ' done' : '') + (i === cur ? ' cur' : '');
+    b.setAttribute('aria-label', 'Satz ' + (i + 1) + (recs[i] ? ', aufgenommen' : ', offen'));
     if(i === cur) b.setAttribute('aria-current', 'step');
     b.dataset.i = i;
     box.appendChild(b);
   }
 }
-function renderParts(){
-  $('partBox').hidden = goal === OWN_ID;
-  if(goal === OWN_ID) return;
-  var g = goalById(goal);
-  for(var p = 0; p < PARTS; p++){
-    var c = partIdx(g, p).filter(function(i){ return bank[skey(goal, level, i)]; }).length;
-    $('p' + p).checked = p === part;
-    $('p' + p + 'l').textContent = 'Teil ' + (p + 1) + (c ? ' · ' + c : '');
-  }
-}
 function renderRec(){
-  var r = recAt(cur), text = textOf(page[cur]);
-  $('recGoal').textContent = goalLabel();
+  var r = recs[cur];
   $('recCount').textContent = 'Satz ' + (cur + 1) + ' von ' + N;
-  renderParts();
-  $('recLine').textContent = text || 'Hier steht dein eigener Satz.';
-  $('recLine').classList.toggle('empty', !text);
+  $('recLine').textContent = texts[cur];
   $('recLine').hidden = false;
   $('editForm').hidden = true;
   $('editBtn').hidden = false;
-  $('editBtn').textContent = text ? 'Text ändern' : 'Satz schreiben';
   $('micBtn').classList.toggle('done', !!r);
   $('recLabelText').textContent = r ? 'Nochmal' : 'Aufnehmen';
   $('listenBtn').hidden = !r;
-  $('delBtn').hidden = !r;
-  disarmDel();
-  $('ownTools').hidden = goal !== OWN_ID;
-  if(goal === OWN_ID) $('ownName').value = own.name;
-  setStatus(r ? (r.dur ? 'Aufgenommen · ' + fmtDur(r.dur) : 'Aufgenommen')
-    : (text ? 'Tippe auf Aufnehmen und sprich den Satz laut und in Ruhe.' : 'Schreib zuerst deinen Satz, dann sprich ihn ein.'));
+  setStatus(r ? (r.dur ? 'Aufgenommen · ' + fmtDur(r.dur) : 'Aufgenommen') : 'Tippe auf Aufnehmen und sprich den Satz laut und in Ruhe.');
   var last = cur === N - 1;
   $('nextBtn').textContent = last ? (count() ? 'Fertig' : 'Ohne Aufnahme weiter') : (r ? 'Weiter' : 'Überspringen');
   renderSegs();
 }
 function renderFertig(){
-  var c = countGoal(goal, level), more = goal !== OWN_ID && part < PARTS - 1 && !locked(goal, level, part + 1);
-  $('fertigHead').textContent = Object.keys(bank).length <= N ? 'Deine erste Meditation ist fertig.'
-    : (part === 0 || goal === OWN_ID ? 'Deine Meditation ist fertig.' : 'Teil ' + (part + 1) + ' ist aufgenommen.');
+  var c = count();
   $('fertigSub').textContent = (c === 1 ? '1 Satz' : c + ' Sätze') + ' in deiner Stimme, dazu Musik und binauraler Klang für beide Ohren.';
-  $('fertigMore').hidden = !more;
-  if(more) $('fertigMore').textContent = 'Weiter mit Teil ' + (part + 2);
-}
-function renderFreq(){
-  $('freqLine').textContent = 'Binaural: links 200 Hz · rechts ' + (200 + beat) + ' Hz · ' + beat + ' Hz Differenz (' + BEATS[beat] + ')';
 }
 function renderPlayer(){
-  var c = countGoal(goal, level);
-  $('playGoal').textContent = goalLabel() + ' · ' + (c === 1 ? '1 Satz' : c + ' Sätze');
+  var c = count();
   $('playLine').textContent = 'Setz deine Kopfhörer auf und tippe auf Start.';
   $('playerNote').textContent = (c === 0 ? 'Noch keine Aufnahme. Du hörst den Ton und liest die Sätze mit. ' : '') +
     'Kein Ton? Dreh die Lautstärke am Handy hoch und schalte am iPhone den Stummschalter aus.';
-  $('toolNote').hidden = true;
   showRemain(minutes() * 60);
   setRing(0);
-  renderFreq();
-  moodPhase(false);
 }
 
 /* ---------- Aufnahme übernehmen ---------- */
@@ -1468,101 +992,19 @@ function takeFile(input){
   input.value = '';
   if(!file) return;
   cancelRec();
-  ingest(file, page[cur]);
+  ingest(file, cur);
 }
-function keep(key, file, p){
-  bank[key] = { blob: file, buffer: p.buffer, gain: p.gain, dur: p.dur };
-  idbWrite(function(s){ s.put(file, dbKey(key)); });
-}
-function ingest(file, key){
+function ingest(file, at){
   setStatus('Lese deine Aufnahme …');
   prepare(file).then(function(p){
-    keep(key, file, p);
-    if(current !== 'aufnahme') return;
-    if(page[cur] === key) renderRec(); else { renderSegs(); renderParts(); }
+    recs[at] = { blob: file, buffer: p.buffer, gain: p.gain, dur: p.dur };
+    idbWrite(function(s){ s.put(file, at); });
+    if(current === 'aufnahme' && cur === at) renderRec(); else renderSegs();
   }).catch(function(err){
     if(err && err.message === 'silent') setStatus('Die Aufnahme ist zu leise. Sprich näher am Mikrofon und nimm den Satz neu auf.', true);
     else if(err && err.message === 'noaudio') setStatus('Dieser Browser kann hier keine Aufnahmen verarbeiten.', true);
     else setStatus('Diese Datei lässt sich nicht lesen. Sichere die Aufnahme als M4A, MP3 oder WAV und wähle sie erneut.', true);
   });
-}
-
-/* ---------- Aufnahmen als ZIP-Datei sichern ---------- */
-var CRC = (function(){
-  var t = [], n, c, k;
-  for(n = 0; n < 256; n++){ c = n; for(k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
-  return t;
-})();
-function crc32(u8){
-  var c = 0xFFFFFFFF;
-  for(var i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
-  return (c ^ 0xFFFFFFFF) >>> 0;
-}
-function utf8(str){
-  if(window.TextEncoder) return new TextEncoder().encode(str);
-  var s = unescape(encodeURIComponent(str)), u = new Uint8Array(s.length);
-  for(var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i);
-  return u;
-}
-/* files: [{name, bytes}], Namen nur aus einfachen Zeichen. Die Dateien werden ungepackt abgelegt. */
-function zipBlob(files){
-  var d = new Date(), parts = [], central = [], offset = 0, csize = 0;
-  var time = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
-  var date = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
-  files.forEach(function(f){
-    var nm = utf8(f.name), crc = crc32(f.bytes), len = f.bytes.length;
-    var lh = new DataView(new ArrayBuffer(30));
-    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true);
-    lh.setUint16(10, time, true); lh.setUint16(12, date, true);
-    lh.setUint32(14, crc, true); lh.setUint32(18, len, true); lh.setUint32(22, len, true);
-    lh.setUint16(26, nm.length, true);
-    var ch = new DataView(new ArrayBuffer(46));
-    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
-    ch.setUint16(12, time, true); ch.setUint16(14, date, true);
-    ch.setUint32(16, crc, true); ch.setUint32(20, len, true); ch.setUint32(24, len, true);
-    ch.setUint16(28, nm.length, true); ch.setUint32(42, offset, true);
-    parts.push(lh, nm, f.bytes);
-    central.push(ch, nm);
-    offset += 30 + nm.length + len;
-    csize += 46 + nm.length;
-  });
-  var eo = new DataView(new ArrayBuffer(22));
-  eo.setUint32(0, 0x06054b50, true); eo.setUint16(8, files.length, true); eo.setUint16(10, files.length, true);
-  eo.setUint32(12, csize, true); eo.setUint32(16, offset, true);
-  return new Blob(parts.concat(central, [eo]), { type: 'application/zip' });
-}
-function fileExt(blob){
-  var m = blob && blob.name && /\.([a-z0-9]{2,5})$/i.exec(blob.name);
-  if(m) return m[1].toLowerCase();
-  var t = (blob && blob.type) || '';
-  if(t.indexOf('mp4') !== -1) return 'm4a';
-  if(t.indexOf('webm') !== -1) return 'webm';
-  if(t.indexOf('ogg') !== -1) return 'ogg';
-  if(t.indexOf('wav') !== -1) return 'wav';
-  if(t.indexOf('mpeg') !== -1) return 'mp3';
-  return 'audio';
-}
-function exportAll(){
-  var note = $('toolNote'), keys = allKeys().filter(function(k){ return bank[k]; }), files = [], list = [];
-  note.hidden = false;
-  if(!keys.length){ note.textContent = 'Es gibt noch keine Aufnahmen zum Sichern.'; return; }
-  note.textContent = 'Packe ' + keys.length + (keys.length === 1 ? ' Aufnahme …' : ' Aufnahmen …');
-  keys.reduce(function(chain, key){
-    return chain.then(function(){
-      return new Response(bank[key].blob).arrayBuffer().then(function(ab){
-        var p = key.split('.'), name = p[0] + '-' + p[1] + '-' + ('0' + (Number(p[2]) + 1)).slice(-2) + '.' + fileExt(bank[key].blob);
-        files.push({ name: name, bytes: new Uint8Array(ab) });
-        list.push(name + '\t' + textOf(key));
-      });
-    });
-  }, Promise.resolve()).then(function(){
-    files.push({ name: 'saetze.txt', bytes: utf8(list.join('\r\n') + '\r\n') });
-    var a = document.createElement('a'), url = URL.createObjectURL(zipBlob(files));
-    a.href = url; a.download = 'ich-bin-aufnahmen.zip'; a.style.display = 'none';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
-    note.textContent = keys.length + (keys.length === 1 ? ' Aufnahme' : ' Aufnahmen') + ' als ZIP-Datei gesichert. Du findest sie bei deinen Downloads.';
-  }).catch(function(){ note.textContent = 'Das Sichern hat nicht geklappt. Versuch es noch einmal.'; });
 }
 
 /* ---------- Direkte Aufnahme übers Mikrofon ---------- */
@@ -1685,7 +1127,7 @@ function micLoop(){
 }
 function beginRec(){
   var rec;
-  mic.at = page[cur]; mic.chunks = []; mic.discard = false; mic.note = null;
+  mic.at = cur; mic.chunks = []; mic.discard = false; mic.note = null;
   try{ rec = new MediaRecorder(mic.stream); }
   catch(e){ releaseMic(); setStatus('Dieser Browser kann hier nicht direkt aufnehmen. Nutze „Datei wählen“.', true); return; }
   mic.rec = rec;
@@ -1751,42 +1193,28 @@ $('introNext').addEventListener('click', function(){
 $('introSkip').addEventListener('click', function(){ show('hinweise'); });
 $('padToggle').addEventListener('click', function(){ if(pad) stopPad(); else startPad(); });
 $('hinweiseOk').addEventListener('click', function(){ show('ziel'); });
-
-/* Zielauswahl */
-$('cats').addEventListener('click', function(e){
-  var b = e.target.closest('.cat');
-  if(b) pickGoal(b.dataset.goal);
+$('catOpen').addEventListener('click', function(){
+  var firstOpen = recs.findIndex(function(r){ return !r; });
+  cur = firstOpen === -1 ? 0 : firstOpen;
+  show('aufnahme');
 });
-['lvK', 'lvS'].forEach(function(id){
-  $(id).addEventListener('change', function(){
-    if(!this.checked) return;
-    if(locked(goal, this.value, 0)){ renderZiel(); show('plus'); return; }
-    level = this.value; store.set('ichbin.level', level);
-    part = 0; setPage(); renderZiel();
-  });
-});
-$('zielRec').addEventListener('click', openRec);
 $('zielPlay').addEventListener('click', function(){ show('player'); });
-$('plusInfo').addEventListener('click', function(){ show('plus'); });
+Array.prototype.forEach.call(document.querySelectorAll('[data-plus]'), function(b){
+  b.addEventListener('click', function(){ show('plus'); });
+});
 $('plusBack').addEventListener('click', function(){ show('ziel'); });
 $('plusOk').addEventListener('click', function(){ show('ziel'); });
-$('offerYes').addEventListener('click', takeOffer);
-$('offerNo').addEventListener('click', dropOffer);
-/* Etwas über das Teilen-Menü des Handys weitergeben. Ohne Menü wird der Link kopiert. */
-function passOn(data, done, failed){
-  function copy(){
-    try{ navigator.clipboard.writeText(data.url || data.text).then(done, failed); }
-    catch(e){ failed(); }
-  }
-  if(navigator.share){
-    navigator.share(data).catch(function(err){ if(!err || err.name !== 'AbortError') copy(); });
-  } else copy();
-}
 $('shareBtn').addEventListener('click', function(){
   var b = this;
-  passOn({ title: 'Ich bin', text: 'Sprich zehn Sätze ein und hör sie als Meditation in deiner eigenen Stimme.', url: APP_URL },
-    function(){ b.textContent = 'Link kopiert'; setTimeout(function(){ b.textContent = 'App weiterempfehlen'; }, 2500); },
-    function(){ b.textContent = APP_URL.replace('https://', ''); });
+  function copied(){ b.textContent = 'Link kopiert'; setTimeout(function(){ b.textContent = 'App weiterempfehlen'; }, 2500); }
+  function copy(){
+    try{ navigator.clipboard.writeText(APP_URL).then(copied, function(){ b.textContent = APP_URL.replace('https://', ''); }); }
+    catch(e){ b.textContent = APP_URL.replace('https://', ''); }
+  }
+  if(navigator.share){
+    navigator.share({ title: 'Ich bin', text: 'Sprich zehn Sätze ein und hör sie als Meditation in deiner eigenen Stimme.', url: APP_URL })
+      .catch(function(err){ if(!err || err.name !== 'AbortError') copy(); });
+  } else copy();
 });
 $('reportBtn').addEventListener('click', function(){
   var text = reportText(), note = $('reportNote'), box = $('reportText');
@@ -1817,63 +1245,20 @@ var skyTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(skyTimer); skyTimer = setTimeout(sky, 200); });
 sky();
 $('replayIntro').addEventListener('click', function(){ ip = 0; show('intro'); });
-
-/* Einsprechen */
 $('recBack').addEventListener('click', function(){ show('ziel'); });
 $('segs').addEventListener('click', function(e){
   var b = e.target.closest('.seg'); if(!b) return;
   stopPreview(); cancelRec(); cur = Number(b.dataset.i); renderRec();
 });
-['p0', 'p1', 'p2'].forEach(function(id){
-  $(id).addEventListener('change', function(){
-    if(!this.checked) return;
-    var p = Number(this.value);
-    stopPreview(); cancelRec();
-    if(locked(goal, level, p)){ renderParts(); show('plus'); return; }
-    part = p; setPage(); cur = firstOpen(); renderRec();
-  });
-});
 $('editBtn').addEventListener('click', function(){
   $('recLine').hidden = true; $('editBtn').hidden = true; $('editForm').hidden = false;
-  $('sentEdit').value = textOf(page[cur]); $('sentEdit').focus();
+  $('sentEdit').value = texts[cur]; $('sentEdit').focus();
 });
 $('editForm').addEventListener('submit', function(e){
   e.preventDefault();
-  var v = clean($('sentEdit').value);
-  if(v || goal === OWN_ID) setText(page[cur], v);
+  var v = $('sentEdit').value.trim();
+  if(v){ texts[cur] = v; store.set('ichbin.texts', texts); }
   renderRec();
-});
-var delArmed = null;
-function disarmDel(){
-  clearTimeout(delArmed); delArmed = null;
-  $('delBtn').textContent = 'Aufnahme löschen';
-}
-$('delBtn').addEventListener('click', function(){
-  if(!delArmed){
-    this.textContent = 'Wirklich löschen? Noch einmal tippen.';
-    delArmed = setTimeout(disarmDel, 4000);
-    return;
-  }
-  var key = page[cur];
-  stopPreview(); cancelRec();
-  delete bank[key];
-  idbWrite(function(s){ s.delete(dbKey(key)); });
-  renderRec();
-  setStatus('Aufnahme gelöscht.');
-});
-$('ownName').addEventListener('change', function(){
-  own.name = clean(this.value).slice(0, 40);
-  this.value = own.name;
-  store.set('ichbin.own', own);
-  $('recGoal').textContent = goalLabel();
-});
-$('ownShare').addEventListener('click', function(){
-  var note = $('ownNote'), n = own.texts.filter(Boolean).length;
-  if(!n){ note.textContent = 'Schreib zuerst mindestens einen Satz. Dann kannst du das Set teilen.'; return; }
-  var url = ownLink();
-  passOn({ title: own.name || 'Ich bin', text: 'Ein Set für dich. Du sprichst die Sätze selbst ein.', url: url },
-    function(){ note.textContent = 'Link kopiert. Wer ihn öffnet, bekommt deine ' + (n === 1 ? 'einen Satz' : n + ' Sätze') + ' und spricht sie selbst ein.'; },
-    function(){ note.textContent = url; });
 });
 $('recPick').addEventListener('change', function(){ takeFile(this); });
 $('recMulti').addEventListener('change', function(){
@@ -1882,12 +1267,16 @@ $('recMulti').addEventListener('change', function(){
   if(!files.length) return;
   cancelRec();
   files.sort(function(a, b){ return (a.lastModified - b.lastModified) || a.name.localeCompare(b.name); });
-  var start = cur, keys = page.slice(start), failed = 0, ok = 0;
-  files = files.slice(0, keys.length);
+  var start = cur, failed = 0, ok = 0;
+  files = files.slice(0, N - start);
   setStatus('Lese ' + files.length + (files.length === 1 ? ' Aufnahme …' : ' Aufnahmen …'));
   files.reduce(function(chain, file, k){
     return chain.then(function(){
-      return prepare(file).then(function(p){ keep(keys[k], file, p); ok++; }).catch(function(){ failed++; });
+      return prepare(file).then(function(p){
+        recs[start + k] = { blob: file, buffer: p.buffer, gain: p.gain, dur: p.dur };
+        idbWrite(function(s){ s.put(file, start + k); });
+        ok++;
+      }).catch(function(){ failed++; });
     });
   }, Promise.resolve()).then(function(){
     if(current !== 'aufnahme') return;
@@ -1903,23 +1292,14 @@ $('nextBtn').addEventListener('click', function(){
   else show(count() ? 'fertig' : 'player');
 });
 $('fertigGo').addEventListener('click', function(){ show('player'); });
-$('fertigMore').addEventListener('click', function(){
-  if(locked(goal, level, part + 1)){ show('plus'); return; }
-  part = Math.min(PARTS - 1, part + 1); setPage(); cur = firstOpen(); show('aufnahme');
-});
-
-/* Player */
-$('playerBack').addEventListener('click', openRec);
+$('playerBack').addEventListener('click', function(){ cur = 0; show('aufnahme'); });
 $('playBtn').addEventListener('click', function(){
   if(!P.started){ startSession(); return; }
   if(P.playing){ ctx.suspend(); setPlaying(false); keepLoud(false); }
   else { outputMode('playback'); keepLoud(true); ctx.resume(); setPlaying(true); }
 });
 $('stopBtn').addEventListener('click', function(){
-  if(!P.started) return;
-  stopSession();
-  $('playLine').textContent = 'Session beendet.';
-  if(P.played >= 300) moodDone(); else moodPhase(false);
+  if(P.started){ stopSession(); $('playLine').textContent = 'Session beendet.'; }
 });
 ['t10','t20','t30'].forEach(function(id){
   $(id).addEventListener('change', function(){
@@ -1929,34 +1309,12 @@ $('stopBtn').addEventListener('click', function(){
     showRemain(minutes() * 60);
   });
 });
-['b10', 'b6', 'b2'].forEach(function(id){
-  $(id).addEventListener('change', function(){
-    if(!this.checked) return;
-    beat = Number(this.value); store.set('ichbin.beat', beat);
-    renderFreq();
-    if(P.started && P.bed) P.bed.setBeat(beat);
-  });
-});
-$('gapRange').addEventListener('input', function(){
-  gap = Number(this.value); store.set('ichbin.gap', gap);
-  $('gapLabel').textContent = 'Pause ' + gap + ' s';
-});
-$('mixBox').addEventListener('change', function(){ mix = this.checked; store.set('ichbin.mix', mix); });
 ['volVoice','volTone'].forEach(function(id){
   $(id).addEventListener('input', function(){
     applyVolumes();
     store.set('ichbin.vol', { voice: Number($('volVoice').value), tone: Number($('volTone').value) });
   });
 });
-$('moodBox').addEventListener('change', function(){
-  if(mood.phase !== 'after' || !mood.entry) return;
-  var list = loadMoods();
-  mood.entry.a = moodPick();
-  if(mood.saved && list.length) list[list.length - 1] = mood.entry; else { list.push(mood.entry); mood.saved = true; }
-  store.set('ichbin.moods', list.slice(-200));
-  $('moodHelp').textContent = 'Notiert. Danke.';
-});
-$('exportBtn').addEventListener('click', exportAll);
 var wipeArmed = null;
 $('wipeBtn').addEventListener('click', function(){
   var b = this;
@@ -1968,7 +1326,7 @@ $('wipeBtn').addEventListener('click', function(){
   clearTimeout(wipeArmed); wipeArmed = null;
   b.textContent = 'Alle Aufnahmen löschen';
   stopSession();
-  bank = {};
+  recs = new Array(N).fill(null);
   idbWrite(function(s){ s.clear(); });
   cur = 0;
   show('ziel');
@@ -1983,22 +1341,16 @@ $('verNote').textContent = 'Version ' + VERSION + '.';
 firstDay();
 var min = store.get('ichbin.min', 10);
 if($('t' + min)) $('t' + min).checked = true;
-$('b' + beat).checked = true;
-$('gapRange').value = gap; $('gapLabel').textContent = 'Pause ' + gap + ' s';
-$('mixBox').checked = mix;
-offered = readSet(location.hash);
 
 idbLoadAll().then(function(saved){
   Object.keys(saved).forEach(function(k){
-    if(!saved[k]) return;
-    var key = /^\d$/.test(k) ? 'pos.k.' + LEGACY[Number(k)] : k;
-    if(/^[a-z]+\.[ksx]\.\d{1,2}$/.test(key)) bank[key] = { blob: saved[k], buffer: null, gain: 1, dur: 0 };
+    var i = Number(k);
+    if(i >= 0 && i < N && saved[k]) recs[i] = { blob: saved[k], buffer: null, gain: 1, dur: 0 };
   });
   var stage = store.get('ichbin.stage', null);
   if(current === 'intro' && ip === 0 && stage){
-    if(offered) stage = 'ziel';
-    if(stage === 'player' && countGoal(goal, level) === 0) stage = 'ziel';
-    if(stage === 'aufnahme'){ openRec(); return; }
+    if(stage === 'player' && count() === 0) stage = 'ziel';
+    if(stage === 'aufnahme'){ var f = recs.findIndex(function(r){ return !r; }); cur = f === -1 ? 0 : f; }
     show(stage);
   }
 });
