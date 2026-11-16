@@ -34,9 +34,12 @@ https://marcsmidt99-design.github.io/ich-bin/.
   ganzen Bogen, die Session spielt alle aufgenommenen Sätze in der Reihenfolge des Bogens.
 - Das Ziel `chakra` ist anders gebaut: 21 Sätze in sieben Teilen zu je drei (`parts`), ein Teil
   je Chakra mit eigenem Verb (bin, fühle, handle, liebe, spreche, sehe, verstehe) und eigenem Ton
-  (`hz`, Solfeggio-Zuordnung 396 bis 963 Hz). In der Session wandern binauraler Trägerton,
-  Klangfläche und Melodie mit dem Chakra des gerade gesprochenen Satzes (`setChakra`). Die
-  Reihenfolge Wurzel bis Krone bleibt auch bei „Gemischt“ erhalten.
+  (`hz`, Solfeggio-Zuordnung 396 bis 963 Hz). Die Musik ist genau auf den Ton des Chakras
+  gestimmt: binauraler Trägerton = Chakra-Ton, Grundton von Klangfläche und Melodie = Chakra-Ton
+  zwei Oktaven tiefer, sodass die Musik von der Wurzel zur Krone ansteigt. Beim Wechsel blendet
+  `setChakra` Klangfläche und Trägerton aus, springt in der Stille auf den neuen Ton, eine
+  Stimmgabel auf dem Chakra-Ton schlägt an, dann setzt die Stimme nach `CHAKRA_SHIFT` Sekunden
+  ein. Die Reihenfolge Wurzel bis Krone bleibt auch bei „Gemischt“ erhalten.
 - Dauer „Einmal“ (`t0`) spielt alle aufgenommenen Sätze genau einmal.
 - `PLUS_OPEN = true` gibt in der Testphase alles frei. Mit `false` bleibt nur Teil 1 von
   „Positive Gedanken“ in der kraftvollen Fassung offen, alles andere führt zur Plus-Seite.
@@ -44,6 +47,8 @@ https://marcsmidt99-design.github.io/ich-bin/.
 
 ## Stand und nächster Schritt
 
+Version 10 (16. November 2026): Chakra-Musik genau auf den Chakra-Ton gestimmt, Stimmgabel und
+Übergang ohne rutschende Töne beim Wechsel.
 Version 9 (16. November 2026): stärkere Chakra-Sätze mit Millionen und großen Geldbeträgen.
 Version 8 (16. November 2026): neues Ziel „Chakren: Erfolg & Fülle“ mit 21 Sätzen, sieben
 Chakra-Tönen und der Dauer „Einmal“. Version 7 (2. Oktober 2026): fünf Ziele mit je 30 Sätzen,
