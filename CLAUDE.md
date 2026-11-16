@@ -20,6 +20,10 @@ https://marcsmidt99-design.github.io/ich-bin/.
 - **Aufnahme und Wiedergabe.** Dieser Teil ist auf dem iPhone heikel und lässt sich hier nicht auf
   einem echten Gerät testen. Ändere ihn nur, wenn es nötig ist, und sag dazu, dass ein Test am
   Handy aussteht.
+- **iPhone-Mikrofon.** Nach dem Abspielen steht `navigator.audioSession.type` auf `playback`. In
+  diesem Modus lehnt Safari das Mikrofon mit `InvalidStateError` ab. Deshalb hält `getMic` vor der
+  Anfrage alles Abspielen an und stellt auf `play-and-record`, mit zwei Ersatzversuchen (`auto`,
+  dann frischer Ton-Kontext). `wake()` stellt vor jeder Wiedergabe wieder auf `playback`.
 - **Keine Heilversprechen.** Die Kategorie „Raus aus dem Stimmungstief“ ist aus dem Start
   genommen und kommt erst nach einer Rechtsprüfung zurück.
 
@@ -47,6 +51,7 @@ https://marcsmidt99-design.github.io/ich-bin/.
 
 ## Stand und nächster Schritt
 
+Version 11 (16. November 2026): Mikrofon am iPhone nach dem Abspielen repariert (InvalidStateError).
 Version 10 (16. November 2026): Chakra-Musik genau auf den Chakra-Ton gestimmt, Stimmgabel und
 Übergang ohne rutschende Töne beim Wechsel.
 Version 9 (16. November 2026): stärkere Chakra-Sätze mit Millionen und großen Geldbeträgen.
