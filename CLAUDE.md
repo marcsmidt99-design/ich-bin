@@ -44,6 +44,7 @@ https://marcsmidt99-design.github.io/ich-bin/.
 
 ## Stand und nächster Schritt
 
+Version 9 (16. November 2026): stärkere Chakra-Sätze mit Millionen und großen Geldbeträgen.
 Version 8 (16. November 2026): neues Ziel „Chakren: Erfolg & Fülle“ mit 21 Sätzen, sieben
 Chakra-Tönen und der Dauer „Einmal“. Version 7 (2. Oktober 2026): fünf Ziele mit je 30 Sätzen,
 kraftvolle und sanfte Fassung, eigenes Set mit Link, Frequenzwahl, Pausenlänge, gemischte
