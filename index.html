@@ -223,7 +223,7 @@ ul{padding:0;list-style:none}
   <section class="screen" id="s-ziel" hidden>
     <header class="grow" style="flex:none;padding-top:.5rem">
       <h1 class="line sm">Was soll deine Stimme dir sagen?</h1>
-      <p class="sub">Wähle ein Ziel. Jedes hat 30 Sätze in drei Teilen, zehn reichen für den Anfang.</p>
+      <p class="sub">Wähle ein Ziel und sprich die Sätze in deiner eigenen Stimme ein.</p>
     </header>
     <div class="offer" id="offer" hidden>
       <p id="offerText"></p>
@@ -259,7 +259,7 @@ ul{padding:0;list-style:none}
       <button class="link" id="plusInfo" type="button">Was ist Plus?</button>
       <button class="link" id="shareBtn" type="button">App weiterempfehlen</button>
     </div>
-    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 7.</span></p>
+    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 8.</span></p>
   </section>
 
   <section class="screen" id="s-plus" hidden>
@@ -268,9 +268,9 @@ ul{padding:0;list-style:none}
     </header>
     <div class="grow">
       <p class="eyebrow">Ich bin Plus</p>
-      <h1 class="line sm">Fünf Ziele. Deine Stimme für jeden Tag.</h1>
+      <h1 class="line sm">Sechs Ziele. Deine Stimme für jeden Tag.</h1>
       <ul class="ticks">
-        <li><span><strong>Vier weitere Ziele.</strong> Selbstwert, Fülle, Ruhe und Schlaf sowie Fokus.</span></li>
+        <li><span><strong>Fünf weitere Ziele.</strong> Die sieben Chakren für Erfolg und Fülle, Selbstwert, Reichtum, Ruhe und Schlaf sowie Fokus.</span></li>
         <li><span><strong>30 Sätze pro Ziel.</strong> Vom ruhigen Einstieg bis zum kraftvollen Schluss.</span></li>
         <li><span><strong>Sanft oder kraftvoll.</strong> Jeder Satz in zwei Fassungen, damit er sich wahr anfühlt.</span></li>
         <li><span><strong>Eigene Sätze.</strong> Schreib dein eigenes Set oder übernimm eines per Link, zum Beispiel von deinem Coach.</span></li>
@@ -290,9 +290,6 @@ ul{padding:0;list-style:none}
     <p class="eyebrow" id="recGoal">Positive Gedanken · kraftvoll</p>
     <fieldset class="chips" id="partBox">
       <legend class="vh">Teil wählen</legend>
-      <input class="vh" type="radio" name="part" id="p0" value="0" checked><label for="p0" id="p0l">Teil 1</label>
-      <input class="vh" type="radio" name="part" id="p1" value="1"><label for="p1" id="p1l">Teil 2</label>
-      <input class="vh" type="radio" name="part" id="p2" value="2"><label for="p2" id="p2l">Teil 3</label>
     </fieldset>
     <div class="segs" id="segs"></div>
     <div class="sentence">
@@ -372,6 +369,7 @@ ul{padding:0;list-style:none}
     <p class="freq" id="freqLine">Binaural: links 200 Hz · rechts 210 Hz · 10 Hz Differenz (Alpha)</p>
     <fieldset class="chips">
       <legend>Dauer</legend>
+      <input class="vh" type="radio" name="dauer" id="t0" value="0"><label for="t0">Einmal</label>
       <input class="vh" type="radio" name="dauer" id="t10" value="10" checked><label for="t10">10 Min</label>
       <input class="vh" type="radio" name="dauer" id="t20" value="20"><label for="t20">20 Min</label>
       <input class="vh" type="radio" name="dauer" id="t30" value="30"><label for="t30">30 Min</label>
@@ -443,6 +441,36 @@ var LEGACY = [0, 1, 4, 5, 12, 14, 19, 24, 26, 29];
 /* Ziele: je 30 Sätze in der Reihenfolge des Bogens, vom ruhigen Einstieg zum kraftvollen Schluss.
    Vor dem Strich steht die kraftvolle Fassung, dahinter die sanfte. "first" sind die zehn Sätze von Teil 1. */
 var GOALS = [
+  /* Sieben Chakren von der Wurzel bis zur Krone, je drei Sätze zu Erfolg und Fülle.
+     Jedes Chakra hat sein eigenes Verb und seinen eigenen Ton (Solfeggio-Zuordnung). */
+  { id: 'chakra', name: 'Chakren: Erfolg & Fülle', first: [0, 1, 2],
+    parts: [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14], [15, 16, 17], [18, 19, 20]],
+    partNames: ['Wurzel', 'Sakral', 'Solarplexus', 'Herz', 'Hals', 'Stirn', 'Krone'],
+    partFull: ['Wurzelchakra', 'Sakralchakra', 'Solarplexuschakra', 'Herzchakra', 'Halschakra', 'Stirnchakra', 'Kronenchakra'],
+    hz: [396, 417, 528, 639, 741, 852, 963],
+    s: [
+    'Ich bin reich.|Ich erlaube mir, reich zu sein.',
+    'Ich bin erfolgreich in allem, was ich anpacke.|Ich erlaube mir, erfolgreich zu sein in allem, was ich anpacke.',
+    'Ich bin finanziell frei.|Ich erlaube mir, finanziell frei zu sein.',
+    'Ich fühle mich wohl mit meinem Reichtum.|Ich erlaube mir, mich mit Reichtum wohlzufühlen.',
+    'Ich fühle die Freiheit, die mein Geld mir gibt.|Ich erlaube mir, die Freiheit zu fühlen, die Geld mir geben kann.',
+    'Ich fühle mich sicher, denn ich habe mehr als genug.|Ich erlaube mir, mich sicher und versorgt zu fühlen.',
+    'Ich handle wie der erfolgreiche Mensch, der ich bin.|Ich erlaube mir, wie ein erfolgreicher Mensch zu handeln.',
+    'Ich handle aus Fülle, nie aus Mangel.|Ich erlaube mir, aus Fülle statt aus Mangel zu handeln.',
+    'Ich handle, und mein Geld arbeitet für mich.|Ich erlaube mir zu handeln, damit mein Geld für mich arbeitet.',
+    'Ich liebe mein Leben in Reichtum und Fülle.|Ich erlaube mir, ein Leben in Fülle zu lieben.',
+    'Ich liebe es zu geben, weil ich mehr als genug habe.|Ich erlaube mir, gern zu geben und gern zu empfangen.',
+    'Ich liebe meinen Erfolg und gönne ihn auch anderen.|Ich erlaube mir, meinen Erfolg zu lieben und ihn anderen zu gönnen.',
+    'Ich spreche wie jemand, der finanziell frei ist.|Ich erlaube mir, wie jemand zu sprechen, der finanziell frei ist.',
+    'Ich spreche meinen Preis aus, und man zahlt ihn gern.|Ich erlaube mir, meinen Preis klar auszusprechen.',
+    'Ich spreche von Fülle, denn ich lebe sie.|Ich erlaube mir, von Fülle zu sprechen.',
+    'Ich sehe meinen Reichtum jeden Tag wachsen.|Ich erlaube mir, meinen Reichtum wachsen zu sehen.',
+    'Ich sehe überall Chancen und nutze sie.|Ich erlaube mir, Chancen zu sehen und zu nutzen.',
+    'Ich sehe mich in dem Leben, das ich mir gewünscht habe, und lebe es jetzt.|Ich erlaube mir, mich in dem Leben zu sehen, das ich mir wünsche.',
+    'Ich verstehe, wie Geld funktioniert, und es fließt zu mir.|Ich erlaube mir zu verstehen, wie Geld funktioniert.',
+    'Ich verstehe, dass Reichtum mein natürlicher Zustand ist.|Ich erlaube mir zu verstehen, dass Reichtum für mich möglich ist.',
+    'Ich verstehe: Ich habe es schon geschafft.|Ich erlaube mir zu verstehen, dass ich es schaffe.'
+  ] },
   { id: 'pos', name: 'Positive Gedanken', first: LEGACY, s: [
     'Ich bin dankbar für diesen neuen Tag.|Ich erlaube mir, dankbar zu sein für diesen neuen Tag.',
     'Ich bin offen für das Gute, das heute kommt.|Ich erlaube mir, offen zu sein für das Gute, das heute kommt.',
@@ -612,7 +640,7 @@ var SILENT_DUR = 5;   // Anzeigedauer für Sätze ohne Aufnahme
 var BEATS = { 10: 'Alpha', 6: 'Theta', 2: 'Delta' };
 var SCREENS = ['intro','hinweise','ziel','plus','aufnahme','fertig','player'];
 var APP_URL = 'https://marcsmidt99-design.github.io/ich-bin/';
-var VERSION = 7;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
+var VERSION = 8;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
 
 function $(id){ return document.getElementById(id); }
 
@@ -687,7 +715,7 @@ var mix = store.get('ichbin.mix', false) === true;
   var old = store.get('ichbin.texts', null);
   if(!Array.isArray(old) || old.length !== LEGACY.length || store.get('ichbin.texts.moved', false)) return;
   old.forEach(function(t, n){
-    var def = GOALS[0].s[LEGACY[n]].split('|')[0];
+    var def = goalById('pos').s[LEGACY[n]].split('|')[0];
     if(typeof t === 'string' && clean(t) && clean(t) !== def && !custom['pos.k.' + LEGACY[n]]) custom['pos.k.' + LEGACY[n]] = clean(t);
   });
   store.set('ichbin.texts2', custom); store.set('ichbin.texts.moved', true);
@@ -696,18 +724,31 @@ var mix = store.get('ichbin.mix', false) === true;
 function skey(gid, lv, idx){ return gid + '.' + (gid === OWN_ID ? 'x' : lv) + '.' + idx; }
 /* Die Plätze eines Teils im Bogen: Teil 1 ist eine Auswahl über den ganzen Bogen, Teil 2 und 3 teilen sich den Rest. */
 function partIdx(g, p){
+  if(g.parts) return (g.parts[p] || []).slice();
   if(p === 0) return g.first.slice();
   var rest = [];
   for(var i = 0; i < g.s.length; i++) if(g.first.indexOf(i) === -1) rest.push(i);
   return rest.slice((p - 1) * N, p * N);
 }
+function partCount(g){ return g.parts ? g.parts.length : PARTS; }
+function partName(g, p){ return g.parts ? g.partNames[p] : 'Teil ' + (p + 1); }
+function isChakra(gid){ var g = goalById(gid); return !!(g && g.hz); }
+/* Zu welchem Chakra ein Satz gehört, -1 bei allen anderen Zielen */
+function chakraOf(key){
+  var p = key.split('.'), g = goalById(p[0]), i = Number(p[2]);
+  if(!g || !g.hz) return -1;
+  for(var k = 0; k < g.parts.length; k++) if(g.parts[k].indexOf(i) !== -1) return k;
+  return -1;
+}
+/* Grundton der Musik zum Chakra-Ton: dieselbe Tonhöhe, in die Lage des bisherigen Grundtons verschoben */
+function tonicFor(hz){ var t = hz / 2; while(t > 260) t /= 2; return t; }
 function goalKeys(gid, lv){
   var out = [], n = gid === OWN_ID ? N : goalById(gid).s.length;
   for(var i = 0; i < n; i++) out.push(skey(gid, lv, i));
   return out;
 }
 function firstKeys(gid, lv){
-  if(gid === OWN_ID) return goalKeys(gid, lv);
+  if(gid === OWN_ID || isChakra(gid)) return goalKeys(gid, lv);
   return partIdx(goalById(gid), 0).map(function(i){ return skey(gid, lv, i); });
 }
 function allKeys(){
@@ -745,7 +786,7 @@ function setPage(){
 }
 function recAt(i){ return bank[page[i]] || null; }
 function count(){ return page.filter(function(k){ return bank[k]; }).length; }
-function firstOpen(){ for(var i = 0; i < N; i++) if(!recAt(i)) return i; return 0; }
+function firstOpen(){ for(var i = 0; i < page.length; i++) if(!recAt(i)) return i; return 0; }
 function fmtDur(s){ return s.toFixed(1).replace('.', ',') + ' s'; }
 function fmtNum(x){ return x.toFixed(1).replace('.', ','); }
 setPage();
@@ -930,41 +971,44 @@ var TONIC = 205;
 var PENT = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3];
 var PHRASES = [[2, 4, 5, 4], [3, 2, 0, null], [2, 4, 7, 5], [4, 3, 2, null], [0, 2, 3, 2], [5, 4, 2, 0], [2, 3, 5, 7], [5, 4, 3, null]];
 var NOTE_GAP = 2.5;   // Sekunden zwischen zwei Melodietönen, vier Töne sind ein Atemzug
-function noteFreq(d){ return TONIC * 2 * PENT[d % 5] * Math.pow(2, Math.floor(d / 5)); }
+function noteFreq(d, t){ return (t || TONIC) * 2 * PENT[d % 5] * Math.pow(2, Math.floor(d / 5)); }
 
 function startBed(opts){
   var c = ctx, now = c.currentTime, oscs = [], fadeIn = opts.fade || 5;
+  var tonic = opts.tonic || TONIC, carrierHz = opts.carrier || 200, pads = [];
   function bus(){ var g = c.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(1, now + fadeIn); return g; }
   var padBus = bus(), melBus = bus(), carrier = null;
   padBus.connect(duck); if(padSend) padBus.connect(padSend);
   melBus.connect(melGate);
 
   /* Klangfläche: je Ton zwei Sinustöne, links und rechts minimal verschieden. Das ergibt ein langsames Schweben. */
-  function padVoice(f, level, spread, lfoHz){
-    var merger = c.createChannelMerger(2), g = c.createGain();
+  function padVoice(ratio, level, spread, lfoHz){
+    var merger = c.createChannelMerger(2), g = c.createGain(), f = tonic * ratio;
     g.gain.value = level;
     [f - spread, f + spread].forEach(function(freq, side){
       var o = c.createOscillator(); o.type = 'sine'; o.frequency.value = freq;
       o.connect(merger, 0, side); o.start(now); oscs.push(o);
+      pads.push({ o: o, ratio: ratio, off: side ? spread : -spread });
     });
     var lfo = c.createOscillator(), depth = c.createGain();
     lfo.frequency.value = lfoHz; depth.gain.value = level * 0.35;
     lfo.connect(depth); depth.connect(g.gain); lfo.start(now); oscs.push(lfo);
     merger.connect(g); g.connect(padBus);
   }
-  padVoice(TONIC / 2, 0.34, 0.12, 0.043);
-  padVoice(TONIC * 3 / 4, 0.2, 0.17, 0.031);
-  padVoice(TONIC * 3 / 2, 0.1, 0.21, 0.057);
-  padVoice(TONIC * 2, 0.045, 0.3, 0.071);
+  padVoice(1 / 2, 0.34, 0.12, 0.043);
+  padVoice(3 / 4, 0.2, 0.17, 0.031);
+  padVoice(3 / 2, 0.1, 0.21, 0.057);
+  padVoice(2, 0.045, 0.3, 0.071);
 
-  /* Binaurales Tonpaar: 200 Hz nur links, rechts je nach Frequenz 210, 206 oder 202 Hz. Ohne Hall, damit die Ohren getrennt bleiben. */
-  var right = null;
+  /* Binaurales Tonpaar: links der Trägerton (200 Hz, bei den Chakren der Ton des Chakras), rechts um 10, 6 oder 2 Hz höher.
+     Ohne Hall, damit die Ohren getrennt bleiben. */
+  var left = null, right = null;
   if(opts.binaural){
     carrier = bus();
     var cm = c.createChannelMerger(2);
-    [200, 200 + beat].forEach(function(f, side){
+    [carrierHz, carrierHz + beat].forEach(function(f, side){
       var o = c.createOscillator(), g = c.createGain();
-      if(side === 1) right = o;
+      if(side === 1) right = o; else left = o;
       o.type = 'sine'; o.frequency.value = f; g.gain.value = 0.5;
       o.connect(g); g.connect(cm, 0, side); o.start(now); oscs.push(o);
     });
@@ -974,7 +1018,7 @@ function startBed(opts){
   /* Melodie: weiche Glockentöne auf einer Fünftonleiter, in festen kleinen Phrasen */
   var step = 0, phrase = 0, count = 0, nextNote = now + 4;
   function note(at, d){
-    var f = noteFreq(d), o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), g2 = c.createGain();
+    var f = noteFreq(d, tonic), o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), g2 = c.createGain();
     o.type = 'sine'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2;
     g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(0.26, at + 0.12); g.gain.exponentialRampToValueAtTime(0.0001, at + 5.5);
     g2.gain.setValueAtTime(0.0001, at); g2.gain.exponentialRampToValueAtTime(0.035, at + 0.05); g2.gain.exponentialRampToValueAtTime(0.0001, at + 2.2);
@@ -999,7 +1043,15 @@ function startBed(opts){
   }, 250);
 
   return {
-    setBeat: function(b){ if(right) right.frequency.setTargetAtTime(200 + b, c.currentTime, 0.4); },
+    setBeat: function(b){ if(right) right.frequency.setTargetAtTime(carrierHz + b, c.currentTime, 0.4); },
+    /* Zum nächsten Chakra gleiten: Trägerton, Klangfläche und Melodie wandern mit */
+    setChakra: function(hz){
+      var t = c.currentTime;
+      carrierHz = hz; tonic = tonicFor(hz);
+      if(left) left.frequency.setTargetAtTime(hz, t, 0.8);
+      if(right) right.frequency.setTargetAtTime(hz + beat, t, 0.8);
+      pads.forEach(function(p){ p.o.frequency.setTargetAtTime(tonic * p.ratio + p.off, t, 0.8); });
+    },
     stop: function(fade){
       clearInterval(timer);
       var t = c.currentTime, live = c.state === 'running', all = [padBus, melBus, carrier];
@@ -1034,7 +1086,7 @@ function renderPadToggle(){
 }
 
 /* ---------- Session ---------- */
-var P = { started: false, playing: false, idx: -1, list: [], nextAt: 0, startAt: 0, endAt: 0, src: null, bed: null, tick: null, fading: false, lock: null, marked: false, played: 0 };
+var P = { started: false, playing: false, idx: -1, list: [], nextAt: 0, startAt: 0, endAt: 0, passEnd: 0, src: null, bed: null, tick: null, fading: false, lock: null, marked: false, played: 0, ci: -1 };
 var RING = 339.3;
 function setRing(frac){ $('ring').style.strokeDashoffset = (RING * (1 - Math.max(0, Math.min(1, frac)))).toFixed(1); }
 
@@ -1044,6 +1096,8 @@ function showRemain(sec){
   var m = Math.floor(sec / 60), s = sec % 60;
   $('remain').textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }
+/* „Einmal“ spielt alle Sätze genau einmal, sonst läuft die Session die gewählten Minuten */
+function idleRemain(){ if(minutes()) showRemain(minutes() * 60); else $('remain').textContent = 'Einmal'; }
 function setPlaying(on){
   P.playing = on;
   $('s-player').classList.toggle('playing', on);
@@ -1097,17 +1151,21 @@ function startSession(){
     var list = keys.filter(function(k){ return bank[k] && bank[k].buffer; }).map(function(k){ return { key: k, rec: bank[k] }; });
     /* Ohne Aufnahme: die Sätze von Teil 1 zum Mitlesen */
     if(!list.length) list = firstKeys(goal, level).filter(textOf).map(function(k){ return { key: k, rec: null }; });
-    if(mix) shuffle(list);
+    var ch = isChakra(goal) ? goalById(goal) : null;
+    if(mix && !ch) shuffle(list);   // die Chakren behalten ihre Reihenfolge von der Wurzel zur Krone
     P.list = list;
     var now = c.currentTime;
     duck.gain.cancelScheduledValues(now); duck.gain.setValueAtTime(1, now);
-    P.bed = startBed({ binaural: true, fade: 5 });
+    P.ci = ch && list.length ? Math.max(0, chakraOf(list[0].key)) : -1;
+    P.bed = startBed(ch && P.ci >= 0 ? { binaural: true, fade: 5, carrier: ch.hz[P.ci], tonic: tonicFor(ch.hz[P.ci]) } : { binaural: true, fade: 5 });
     master.gain.cancelScheduledValues(now);
     master.gain.setValueAtTime(0.0001, now);
     master.gain.linearRampToValueAtTime(1, now + 4);
-    P.startAt = now; P.endAt = now + minutes() * 60;
+    P.passEnd = now + 6 + list.reduce(function(sum, it){ return sum + (it.rec ? it.rec.dur : SILENT_DUR) + gap; }, 0) + 2;
+    P.startAt = now; P.endAt = minutes() ? now + minutes() * 60 : P.passEnd;
     P.nextAt = now + 6;
     P.idx = -1; P.fading = false; P.started = true; P.marked = false;
+    renderFreq();
     $('playLine').textContent = 'Atme ruhig ein und aus.';
     setPlaying(true);
     P.tick = setInterval(tick, 200);
@@ -1137,6 +1195,8 @@ function advance(){
   P.idx++;
   if(P.idx >= P.list.length){ P.idx = 0; if(mix && P.list.length > 2) shuffle(P.list); }
   var it = P.list[P.idx], t = ctx.currentTime + 0.05, dur = SILENT_DUR;
+  var ci = chakraOf(it.key);
+  if(ci !== -1 && ci !== P.ci && P.bed){ P.ci = ci; P.bed.setChakra(goalById(goal).hz[ci]); renderFreq(); }
   if(it.rec){
     var s = ctx.createBufferSource(), g = ctx.createGain();
     s.buffer = it.rec.buffer; g.gain.value = it.rec.gain; s.connect(g); g.connect(voiceIn);
@@ -1178,7 +1238,9 @@ function stopSession(){
   if(P.lock){ try{ P.lock.release(); }catch(e){} P.lock = null; }
   setPlaying(false); keepLoud(false);
   if(!running) ctx.resume();
-  showRemain(minutes() * 60);
+  P.ci = -1;
+  idleRemain();
+  renderFreq();
 }
 function finish(){
   if(!P.marked){ P.marked = true; markDay(); }
@@ -1333,9 +1395,9 @@ function pickGoal(id){
 function openRec(){
   if(goal !== OWN_ID){
     var found = false;
-    for(var p = 0; p < PARTS && !found; p++){
+    for(var p = 0; p < partCount(goalById(goal)) && !found; p++){
       part = p; setPage();
-      if(count() < N && !locked(goal, level, p)) found = true;
+      if(count() < page.length && !locked(goal, level, p)) found = true;
     }
     if(!found) part = 0;
   }
@@ -1394,7 +1456,8 @@ function setStatus(msg, bad){
 function renderSegs(){
   var box = $('segs');
   box.textContent = '';
-  for(var i = 0; i < N; i++){
+  box.style.gridTemplateColumns = 'repeat(' + page.length + ',1fr)';
+  for(var i = 0; i < page.length; i++){
     var b = document.createElement('button');
     b.type = 'button';
     b.className = 'seg' + (recAt(i) ? ' done' : '') + (i === cur ? ' cur' : '');
@@ -1405,19 +1468,23 @@ function renderSegs(){
   }
 }
 function renderParts(){
-  $('partBox').hidden = goal === OWN_ID;
-  if(goal === OWN_ID) return;
-  var g = goalById(goal);
-  for(var p = 0; p < PARTS; p++){
+  var box = $('partBox'), g = goal === OWN_ID ? null : goalById(goal);
+  box.hidden = !g;
+  Array.prototype.slice.call(box.querySelectorAll('input, label')).forEach(function(n){ box.removeChild(n); });
+  if(!g) return;
+  for(var p = 0; p < partCount(g); p++){
     var c = partIdx(g, p).filter(function(i){ return bank[skey(goal, level, i)]; }).length;
-    $('p' + p).checked = p === part;
-    $('p' + p + 'l').textContent = 'Teil ' + (p + 1) + (c ? ' · ' + c : '');
+    var inp = document.createElement('input'), lab = document.createElement('label');
+    inp.className = 'vh'; inp.type = 'radio'; inp.name = 'part'; inp.id = 'p' + p; inp.value = String(p); inp.checked = p === part;
+    lab.htmlFor = 'p' + p; lab.id = 'p' + p + 'l';
+    lab.textContent = partName(g, p) + (c ? ' · ' + c : '');
+    box.appendChild(inp); box.appendChild(lab);
   }
 }
 function renderRec(){
   var r = recAt(cur), text = textOf(page[cur]);
   $('recGoal').textContent = goalLabel();
-  $('recCount').textContent = 'Satz ' + (cur + 1) + ' von ' + N;
+  $('recCount').textContent = 'Satz ' + (cur + 1) + ' von ' + page.length;
   renderParts();
   $('recLine').textContent = text || 'Hier steht dein eigener Satz.';
   $('recLine').classList.toggle('empty', !text);
@@ -1434,20 +1501,26 @@ function renderRec(){
   if(goal === OWN_ID) $('ownName').value = own.name;
   setStatus(r ? (r.dur ? 'Aufgenommen · ' + fmtDur(r.dur) : 'Aufgenommen')
     : (text ? 'Tippe auf Aufnehmen und sprich den Satz laut und in Ruhe.' : 'Schreib zuerst deinen Satz, dann sprich ihn ein.'));
-  var last = cur === N - 1;
+  var last = cur === page.length - 1;
   $('nextBtn').textContent = last ? (count() ? 'Fertig' : 'Ohne Aufnahme weiter') : (r ? 'Weiter' : 'Überspringen');
   renderSegs();
 }
 function renderFertig(){
-  var c = countGoal(goal, level), more = goal !== OWN_ID && part < PARTS - 1 && !locked(goal, level, part + 1);
-  $('fertigHead').textContent = Object.keys(bank).length <= N ? 'Deine erste Meditation ist fertig.'
+  var g = goal === OWN_ID ? null : goalById(goal);
+  var c = countGoal(goal, level), more = !!g && part < partCount(g) - 1 && !locked(goal, level, part + 1);
+  $('fertigHead').textContent = g && g.parts ? 'Das ' + g.partFull[part] + ' ist aufgenommen.'
+    : Object.keys(bank).length <= N ? 'Deine erste Meditation ist fertig.'
     : (part === 0 || goal === OWN_ID ? 'Deine Meditation ist fertig.' : 'Teil ' + (part + 1) + ' ist aufgenommen.');
   $('fertigSub').textContent = (c === 1 ? '1 Satz' : c + ' Sätze') + ' in deiner Stimme, dazu Musik und binauraler Klang für beide Ohren.';
   $('fertigMore').hidden = !more;
-  if(more) $('fertigMore').textContent = 'Weiter mit Teil ' + (part + 2);
+  if(more) $('fertigMore').textContent = 'Weiter mit ' + (g.parts ? g.partFull[part + 1] : 'Teil ' + (part + 2));
 }
 function renderFreq(){
-  $('freqLine').textContent = 'Binaural: links 200 Hz · rechts ' + (200 + beat) + ' Hz · ' + beat + ' Hz Differenz (' + BEATS[beat] + ')';
+  var ch = isChakra(goal) ? goalById(goal) : null, line;
+  if(!ch) line = 'Binaural: links 200 Hz · rechts ' + (200 + beat) + ' Hz';
+  else if(P.started && P.ci >= 0) line = ch.partFull[P.ci] + ': links ' + ch.hz[P.ci] + ' Hz · rechts ' + (ch.hz[P.ci] + beat) + ' Hz';
+  else line = 'Chakra-Töne von ' + ch.hz[0] + ' Hz (Wurzel) bis ' + ch.hz[ch.hz.length - 1] + ' Hz (Krone)';
+  $('freqLine').textContent = line + ' · ' + beat + ' Hz Differenz (' + BEATS[beat] + ')';
 }
 function renderPlayer(){
   var c = countGoal(goal, level);
@@ -1456,7 +1529,7 @@ function renderPlayer(){
   $('playerNote').textContent = (c === 0 ? 'Noch keine Aufnahme. Du hörst den Ton und liest die Sätze mit. ' : '') +
     'Kein Ton? Dreh die Lautstärke am Handy hoch und schalte am iPhone den Stummschalter aus.';
   $('toolNote').hidden = true;
-  showRemain(minutes() * 60);
+  idleRemain();
   setRing(0);
   renderFreq();
   moodPhase(false);
@@ -1824,14 +1897,13 @@ $('segs').addEventListener('click', function(e){
   var b = e.target.closest('.seg'); if(!b) return;
   stopPreview(); cancelRec(); cur = Number(b.dataset.i); renderRec();
 });
-['p0', 'p1', 'p2'].forEach(function(id){
-  $(id).addEventListener('change', function(){
-    if(!this.checked) return;
-    var p = Number(this.value);
-    stopPreview(); cancelRec();
-    if(locked(goal, level, p)){ renderParts(); show('plus'); return; }
-    part = p; setPage(); cur = firstOpen(); renderRec();
-  });
+$('partBox').addEventListener('change', function(e){
+  var t = e.target;
+  if(!t || t.name !== 'part' || !t.checked) return;
+  var p = Number(t.value);
+  stopPreview(); cancelRec();
+  if(locked(goal, level, p)){ renderParts(); show('plus'); return; }
+  part = p; setPage(); cur = firstOpen(); renderRec();
 });
 $('editBtn').addEventListener('click', function(){
   $('recLine').hidden = true; $('editBtn').hidden = true; $('editForm').hidden = false;
@@ -1899,13 +1971,13 @@ $('recMulti').addEventListener('change', function(){
 $('listenBtn').addEventListener('click', function(){ preview(cur); });
 $('nextBtn').addEventListener('click', function(){
   stopPreview(); cancelRec();
-  if(cur < N - 1){ cur++; renderRec(); }
+  if(cur < page.length - 1){ cur++; renderRec(); }
   else show(count() ? 'fertig' : 'player');
 });
 $('fertigGo').addEventListener('click', function(){ show('player'); });
 $('fertigMore').addEventListener('click', function(){
   if(locked(goal, level, part + 1)){ show('plus'); return; }
-  part = Math.min(PARTS - 1, part + 1); setPage(); cur = firstOpen(); show('aufnahme');
+  part = Math.min(partCount(goalById(goal)) - 1, part + 1); setPage(); cur = firstOpen(); show('aufnahme');
 });
 
 /* Player */
@@ -1921,12 +1993,12 @@ $('stopBtn').addEventListener('click', function(){
   $('playLine').textContent = 'Session beendet.';
   if(P.played >= 300) moodDone(); else moodPhase(false);
 });
-['t10','t20','t30'].forEach(function(id){
+['t0','t10','t20','t30'].forEach(function(id){
   $(id).addEventListener('change', function(){
     store.set('ichbin.min', minutes());
-    if(P.started){ P.endAt = ctx.currentTime + minutes() * 60; P.fading = false; }
+    if(P.started){ P.endAt = minutes() ? ctx.currentTime + minutes() * 60 : Math.max(P.passEnd, ctx.currentTime + 5); P.fading = false; }
     else setRing(0);
-    showRemain(minutes() * 60);
+    if(P.started) showRemain(P.endAt - ctx.currentTime); else idleRemain();
   });
 });
 ['b10', 'b6', 'b2'].forEach(function(id){

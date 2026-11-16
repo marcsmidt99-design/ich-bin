@@ -4,7 +4,10 @@
 als Meditation, unterlegt mit Musik und zwei Tönen (links 200 Hz, rechts je nach Wahl 210, 206
 oder 202 Hz).
 
-Es gibt fünf Ziele mit je 30 Sätzen in drei Teilen, jeden Satz in einer kraftvollen („Ich bin …“)
+Das Ziel „Chakren: Erfolg & Fülle“ führt mit 21 Sätzen von der Wurzel bis zur Krone. Jedes Chakra
+hat sein eigenes Verb und seinen eigenen Ton (396 bis 963 Hz), und die Musik wandert beim Hören mit.
+
+Daneben gibt es fünf Ziele mit je 30 Sätzen in drei Teilen, jeden Satz in einer kraftvollen („Ich bin …“)
 und einer sanften Fassung („Ich erlaube mir …“), dazu ein eigenes Set mit bis zu zehn selbst
 geschriebenen Sätzen. Ein eigenes Set lässt sich als Link weitergeben. Der Link enthält nur die
 Texte, die andere Person spricht sie selbst ein.
