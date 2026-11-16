@@ -32,15 +32,25 @@ https://marcsmidt99-design.github.io/ich-bin/.
   alte Aufnahmen erhalten bleiben und `v6.html` sie weiter findet.
 - Ein Ziel hat 30 Sätze in drei Teilen zu je zehn. Teil 1 (`first`) ist eine Auswahl über den
   ganzen Bogen, die Session spielt alle aufgenommenen Sätze in der Reihenfolge des Bogens.
+- Das Ziel `chakra` ist anders gebaut: 21 Sätze in sieben Teilen zu je drei (`parts`), ein Teil
+  je Chakra mit eigenem Verb (bin, fühle, handle, liebe, spreche, sehe, verstehe) und eigenem Ton
+  (`hz`, Solfeggio-Zuordnung 396 bis 963 Hz). In der Session wandern binauraler Trägerton,
+  Klangfläche und Melodie mit dem Chakra des gerade gesprochenen Satzes (`setChakra`). Die
+  Reihenfolge Wurzel bis Krone bleibt auch bei „Gemischt“ erhalten.
+- Dauer „Einmal“ (`t0`) spielt alle aufgenommenen Sätze genau einmal.
 - `PLUS_OPEN = true` gibt in der Testphase alles frei. Mit `false` bleibt nur Teil 1 von
   „Positive Gedanken“ in der kraftvollen Fassung offen, alles andere führt zur Plus-Seite.
 - Die App hat keinen Server. Einstellungen und Zähler liegen in `localStorage` unter `ichbin.*`.
 
 ## Stand und nächster Schritt
 
-Version 7 (2. Oktober 2026): fünf Ziele mit je 30 Sätzen, kraftvolle und sanfte Fassung, eigenes
-Set mit Link zum Teilen, Frequenzwahl, Pausenlänge, gemischte Reihenfolge, Stimmung vor und nach
-der Session, einzelne Aufnahme löschen, Aufnahmen als ZIP sichern, „Rückmeldung senden“.
+Version 8 (16. November 2026): neues Ziel „Chakren: Erfolg & Fülle“ mit 21 Sätzen, sieben
+Chakra-Tönen und der Dauer „Einmal“. Version 7 (2. Oktober 2026): fünf Ziele mit je 30 Sätzen,
+kraftvolle und sanfte Fassung, eigenes Set mit Link, Frequenzwahl, Pausenlänge, gemischte
+Reihenfolge, Stimmung vor und nach der Session, Aufnahmen als ZIP, „Rückmeldung senden“.
+
+Wie die Chakra-Töne und das Gleiten zwischen ihnen klingen, ist nicht angehört. Das muss der
+Besitzer mit Kopfhörern prüfen.
 
 Der Besitzer hat entschieden, die App auszubauen, bevor der Test mit 20 Personen gelaufen ist. Der
 Test bleibt der nächste Schritt: Mindestens die Hälfte soll an 4 von 7 Tagen hören. Gemessen wird
