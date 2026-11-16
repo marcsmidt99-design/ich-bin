@@ -259,7 +259,7 @@ ul{padding:0;list-style:none}
       <button class="link" id="plusInfo" type="button">Was ist Plus?</button>
       <button class="link" id="shareBtn" type="button">App weiterempfehlen</button>
     </div>
-    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 11.</span></p>
+    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 12.</span></p>
   </section>
 
   <section class="screen" id="s-plus" hidden>
@@ -367,6 +367,10 @@ ul{padding:0;list-style:none}
     <p class="eyebrow" id="playGoal">Positive Gedanken · kraftvoll</p>
     <div class="now"><p class="line sm" id="playLine">Setz deine Kopfhörer auf und tippe auf Start.</p></div>
     <p class="freq" id="freqLine">Binaural: links 200 Hz · rechts 210 Hz · 10 Hz Differenz (Alpha)</p>
+    <div class="row" id="capRow" style="justify-content:center" hidden>
+      <button class="btn primary" id="capSave" type="button">Meditation speichern</button>
+    </div>
+    <p class="help" id="capNote" role="status" hidden></p>
     <fieldset class="chips">
       <legend>Dauer</legend>
       <input class="vh" type="radio" name="dauer" id="t0" value="0"><label for="t0">Einmal</label>
@@ -378,6 +382,10 @@ ul{padding:0;list-style:none}
       <legend>Klang</legend>
       <input class="vh" type="checkbox" id="fxVoice" checked><label for="fxVoice">Weiche Stimme</label>
       <input class="vh" type="checkbox" id="fxMelody" checked><label for="fxMelody">Melodie</label>
+    </fieldset>
+    <fieldset class="chips">
+      <legend>Datei</legend>
+      <input class="vh" type="checkbox" id="capBox"><label for="capBox">Als Datei mitschneiden</label>
     </fieldset>
     <fieldset class="chips" id="moodBox">
       <legend id="moodLegend">Stimmung vorher</legend>
@@ -640,7 +648,7 @@ var SILENT_DUR = 5;   // Anzeigedauer für Sätze ohne Aufnahme
 var BEATS = { 10: 'Alpha', 6: 'Theta', 2: 'Delta' };
 var SCREENS = ['intro','hinweise','ziel','plus','aufnahme','fertig','player'];
 var APP_URL = 'https://marcsmidt99-design.github.io/ich-bin/';
-var VERSION = 11;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
+var VERSION = 12;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
 
 function $(id){ return document.getElementById(id); }
 
@@ -1190,6 +1198,7 @@ function startSession(){
     P.startAt = now; P.endAt = minutes() ? now + minutes() * 60 : P.passEnd;
     P.nextAt = now + 6;
     P.idx = -1; P.fading = false; P.started = true; P.marked = false;
+    capStart();
     renderFreq();
     $('playLine').textContent = 'Atme ruhig ein und aus.';
     setPlaying(true);
@@ -1239,9 +1248,68 @@ function advance(){
   line.textContent = textOf(it.key);
   line.classList.remove('in'); void line.offsetWidth; line.classList.add('in');
 }
+/* Meditation als Datei: Die Session wird so mitgeschnitten, wie sie klingt, mit Stimme, Musik und Tönen.
+   Danach lässt sie sich teilen oder speichern und läuft in jeder Musik- oder Datei-App, auch bei gesperrtem Bildschirm. */
+var cap = { rec: null, dest: null, chunks: [], blob: null, type: '' };
+function capNote(t){ $('capNote').hidden = !t; $('capNote').textContent = t || ''; }
+function capType(){
+  if(!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+  /* Zuerst M4A: Auf dem iPhone ist das AAC, das jede App abspielt, und anders als WebM hat die Datei eine Länge zum Spulen. */
+  var list = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
+  for(var i = 0; i < list.length; i++) if(MediaRecorder.isTypeSupported(list[i])) return list[i];
+  return '';
+}
+function capStart(){
+  cap.blob = null; $('capRow').hidden = true; capNote('');
+  if(!$('capBox').checked) return;
+  var t = capType();
+  if(!t || !ctx.createMediaStreamDestination){ capNote('Dieser Browser kann die Meditation nicht als Datei mitschneiden.'); return; }
+  try{
+    cap.dest = ctx.createMediaStreamDestination(); master.connect(cap.dest);
+    cap.chunks = []; cap.type = t;
+    cap.rec = new MediaRecorder(cap.dest.stream, { mimeType: t, audioBitsPerSecond: 160000 });
+    cap.rec.ondataavailable = function(e){ if(e.data && e.data.size) cap.chunks.push(e.data); };
+    cap.rec.onstop = capDone;
+    cap.rec.start(1000);
+    capNote('Wird mitgeschnitten. Lass den Bildschirm an, bis die Session zu Ende ist.');
+  }catch(e){ cap.rec = null; capNote('Mitschneiden klappt in diesem Browser nicht.'); }
+}
+function capStop(){ if(cap.rec && cap.rec.state !== 'inactive'){ try{ cap.rec.stop(); }catch(e){} } }
+function capDone(){
+  try{ master.disconnect(cap.dest); }catch(e){}
+  cap.rec = null; cap.dest = null;
+  if(!cap.chunks.length){ capNote('Es wurde nichts mitgeschnitten.'); return; }
+  cap.blob = new Blob(cap.chunks, { type: cap.type.split(';')[0] });
+  cap.chunks = [];
+  $('capRow').hidden = false;
+  capNote('Deine Meditation ist bereit (' + (cap.blob.size / 1e6).toFixed(1).replace('.', ',') + ' MB). Tippe auf „Meditation speichern“.');
+}
+function capName(){
+  var ext = cap.type.indexOf('mp4') !== -1 ? 'm4a' : 'webm';
+  var d = new Date();
+  return 'ich-bin-' + (isChakra(goal) ? 'chakren' : goal) + '-' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2) + '.' + ext;
+}
+function capDownload(name){
+  var a = document.createElement('a'), url = URL.createObjectURL(cap.blob);
+  a.href = url; a.download = name; a.style.display = 'none';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+  capNote('Gespeichert. Du findest die Datei bei deinen Downloads.');
+}
+function capSave(){
+  if(!cap.blob) return;
+  var name = capName(), file = null;
+  try{ file = new File([cap.blob], name, { type: cap.blob.type }); }catch(e){}
+  if(file && navigator.canShare && navigator.canShare({ files: [file] })){
+    navigator.share({ files: [file], title: 'Meine Meditation' })
+      .then(function(){ capNote('Erledigt.'); })
+      .catch(function(err){ if(!err || err.name !== 'AbortError') capDownload(name); });
+  } else capDownload(name);
+}
 function stopSession(){
   if(!P.started) return;
   clearInterval(P.tick); P.tick = null;
+  capStop();
   var running = ctx.state === 'running', t = ctx.currentTime, at = running ? t + 0.3 : 0;
   P.played = Math.min(t, P.endAt) - P.startAt;
   if(P.played >= 30) addStats(P.played);
@@ -1557,6 +1625,8 @@ function renderPlayer(){
   $('playerNote').textContent = (c === 0 ? 'Noch keine Aufnahme. Du hörst den Ton und liest die Sätze mit. ' : '') +
     'Kein Ton? Dreh die Lautstärke am Handy hoch und schalte am iPhone den Stummschalter aus.';
   $('toolNote').hidden = true;
+  $('capRow').hidden = !cap.blob;
+  if(!cap.blob) capNote('');
   idleRemain();
   setRing(0);
   renderFreq();
@@ -2087,6 +2157,7 @@ $('moodBox').addEventListener('change', function(){
   $('moodHelp').textContent = 'Notiert. Danke.';
 });
 $('exportBtn').addEventListener('click', exportAll);
+$('capSave').addEventListener('click', capSave);
 var wipeArmed = null;
 $('wipeBtn').addEventListener('click', function(){
   var b = this;

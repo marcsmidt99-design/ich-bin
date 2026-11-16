@@ -45,12 +45,17 @@ https://marcsmidt99-design.github.io/ich-bin/.
   Stimmgabel auf dem Chakra-Ton schlägt an, dann setzt die Stimme nach `CHAKRA_SHIFT` Sekunden
   ein. Die Reihenfolge Wurzel bis Krone bleibt auch bei „Gemischt“ erhalten.
 - Dauer „Einmal“ (`t0`) spielt alle aufgenommenen Sätze genau einmal.
+- „Als Datei mitschneiden“ (`capBox`) nimmt die Session über `MediaStreamDestination` und
+  `MediaRecorder` so auf, wie sie klingt (Stimme, Musik, Töne). Danach bietet „Meditation
+  speichern“ das Teilen-Menü an (Datei), sonst einen Download. Am iPhone M4A (AAC). Das dauert so
+  lange wie die Session selbst.
 - `PLUS_OPEN = true` gibt in der Testphase alles frei. Mit `false` bleibt nur Teil 1 von
   „Positive Gedanken“ in der kraftvollen Fassung offen, alles andere führt zur Plus-Seite.
 - Die App hat keinen Server. Einstellungen und Zähler liegen in `localStorage` unter `ichbin.*`.
 
 ## Stand und nächster Schritt
 
+Version 12 (16. November 2026): Meditation als Datei mitschneiden und speichern.
 Version 11 (16. November 2026): Mikrofon am iPhone nach dem Abspielen repariert (InvalidStateError).
 Version 10 (16. November 2026): Chakra-Musik genau auf den Chakra-Ton gestimmt, Stimmgabel und
 Übergang ohne rutschende Töne beim Wechsel.
