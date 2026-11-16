@@ -259,7 +259,7 @@ ul{padding:0;list-style:none}
       <button class="link" id="plusInfo" type="button">Was ist Plus?</button>
       <button class="link" id="shareBtn" type="button">App weiterempfehlen</button>
     </div>
-    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 9.</span></p>
+    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 10.</span></p>
   </section>
 
   <section class="screen" id="s-plus" hidden>
@@ -640,7 +640,7 @@ var SILENT_DUR = 5;   // Anzeigedauer für Sätze ohne Aufnahme
 var BEATS = { 10: 'Alpha', 6: 'Theta', 2: 'Delta' };
 var SCREENS = ['intro','hinweise','ziel','plus','aufnahme','fertig','player'];
 var APP_URL = 'https://marcsmidt99-design.github.io/ich-bin/';
-var VERSION = 9;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
+var VERSION = 10;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
 
 function $(id){ return document.getElementById(id); }
 
@@ -740,8 +740,10 @@ function chakraOf(key){
   for(var k = 0; k < g.parts.length; k++) if(g.parts[k].indexOf(i) !== -1) return k;
   return -1;
 }
-/* Grundton der Musik zum Chakra-Ton: dieselbe Tonhöhe, in die Lage des bisherigen Grundtons verschoben */
-function tonicFor(hz){ var t = hz / 2; while(t > 260) t /= 2; return t; }
+/* Grundton der Musik zum Chakra-Ton: genau derselbe Ton, zwei Oktaven tiefer. Von der Wurzel (99 Hz) bis zur Krone (240,75 Hz)
+   steigt die Musik so mit jedem Chakra an. */
+function tonicFor(hz){ return hz / 4; }
+var CHAKRA_SHIFT = 3.2;   // Sekunden Übergang zum nächsten Chakra: Musik ausblenden, Stimmgabel, dann die Stimme
 function goalKeys(gid, lv){
   var out = [], n = gid === OWN_ID ? N : goalById(gid).s.length;
   for(var i = 0; i < n; i++) out.push(skey(gid, lv, i));
@@ -977,8 +979,21 @@ function startBed(opts){
   var c = ctx, now = c.currentTime, oscs = [], fadeIn = opts.fade || 5;
   var tonic = opts.tonic || TONIC, carrierHz = opts.carrier || 200, pads = [];
   function bus(){ var g = c.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(1, now + fadeIn); return g; }
-  var padBus = bus(), melBus = bus(), carrier = null;
+  var padBus = bus(), melBus = bus(), carrier = null, quietUntil = 0;
   padBus.connect(duck); if(padSend) padBus.connect(padSend);
+  var forkBus = c.createGain(); forkBus.connect(duck); if(padSend) forkBus.connect(padSend);
+
+  /* Stimmgabel: fast reiner Sinuston genau auf dem Chakra-Ton, lang ausklingend, mit kurzem hellem Anschlag */
+  function fork(hz, at){
+    var o = c.createOscillator(), g = c.createGain(), o2 = c.createOscillator(), g2 = c.createGain();
+    o.type = 'sine'; o.frequency.value = hz; o2.type = 'sine'; o2.frequency.value = hz * 6.27;
+    g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(0.2, at + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, at + 9);
+    g2.gain.setValueAtTime(0.0001, at); g2.gain.exponentialRampToValueAtTime(0.03, at + 0.005); g2.gain.exponentialRampToValueAtTime(0.0001, at + 0.6);
+    o.connect(g); o2.connect(g2); g.connect(forkBus); g2.connect(forkBus);
+    o.start(at); o2.start(at); o.stop(at + 9.1); o2.stop(at + 0.7);
+    oscs.push(o, o2);
+  }
+  if(opts.carrier && opts.tonic) fork(opts.carrier, now + 1.5);
   melBus.connect(melGate);
 
   /* Klangfläche: je Ton zwei Sinustöne, links und rechts minimal verschieden. Das ergibt ein langsames Schweben. */
@@ -1035,7 +1050,7 @@ function startBed(opts){
     if(nextNote < t) nextNote = t + 0.05;
     while(nextNote < t + 0.6){
       var ph = PHRASES[phrase % PHRASES.length], d = ph[step];
-      if(d != null) note(nextNote, d);
+      if(d != null && nextNote > quietUntil) note(nextNote, d);
       step++;
       if(step >= ph.length){ step = 0; phrase++; }
       nextNote += NOTE_GAP;
@@ -1044,17 +1059,25 @@ function startBed(opts){
 
   return {
     setBeat: function(b){ if(right) right.frequency.setTargetAtTime(carrierHz + b, c.currentTime, 0.4); },
-    /* Zum nächsten Chakra gleiten: Trägerton, Klangfläche und Melodie wandern mit */
+    /* Zum nächsten Chakra wechseln, ohne dass die Töne rutschen: Klangfläche und Trägerton blenden aus,
+       springen in der Stille auf den neuen Ton, die Stimmgabel schlägt an, dann blendet alles wieder ein. */
     setChakra: function(hz){
-      var t = c.currentTime;
+      var t = c.currentTime, out = 1.2, back = 2.6, at = t + out;
+      [padBus, carrier].forEach(function(g){
+        if(!g) return;
+        g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), t);
+        g.gain.linearRampToValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(1, at + back);
+      });
       carrierHz = hz; tonic = tonicFor(hz);
-      if(left) left.frequency.setTargetAtTime(hz, t, 0.8);
-      if(right) right.frequency.setTargetAtTime(hz + beat, t, 0.8);
-      pads.forEach(function(p){ p.o.frequency.setTargetAtTime(tonic * p.ratio + p.off, t, 0.8); });
+      if(left) left.frequency.setValueAtTime(hz, at);
+      if(right) right.frequency.setValueAtTime(hz + beat, at);
+      pads.forEach(function(p){ p.o.frequency.setValueAtTime(tonic * p.ratio + p.off, at); });
+      quietUntil = at + 1.5;
+      fork(hz, at + 0.2);
     },
     stop: function(fade){
       clearInterval(timer);
-      var t = c.currentTime, live = c.state === 'running', all = [padBus, melBus, carrier];
+      var t = c.currentTime, live = c.state === 'running', all = [padBus, melBus, carrier, forkBus];
       if(live) all.forEach(function(g){
         if(!g) return;
         g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0.0001, t + fade);
@@ -1161,7 +1184,9 @@ function startSession(){
     master.gain.cancelScheduledValues(now);
     master.gain.setValueAtTime(0.0001, now);
     master.gain.linearRampToValueAtTime(1, now + 4);
-    P.passEnd = now + 6 + list.reduce(function(sum, it){ return sum + (it.rec ? it.rec.dur : SILENT_DUR) + gap; }, 0) + 2;
+    var shifts = 0;
+    for(var k = 1; k < list.length; k++) if(chakraOf(list[k].key) !== chakraOf(list[k - 1].key)) shifts++;
+    P.passEnd = now + 6 + list.reduce(function(sum, it){ return sum + (it.rec ? it.rec.dur : SILENT_DUR) + gap; }, 0) + shifts * CHAKRA_SHIFT + 4;
     P.startAt = now; P.endAt = minutes() ? now + minutes() * 60 : P.passEnd;
     P.nextAt = now + 6;
     P.idx = -1; P.fading = false; P.started = true; P.marked = false;
@@ -1196,7 +1221,10 @@ function advance(){
   if(P.idx >= P.list.length){ P.idx = 0; if(mix && P.list.length > 2) shuffle(P.list); }
   var it = P.list[P.idx], t = ctx.currentTime + 0.05, dur = SILENT_DUR;
   var ci = chakraOf(it.key);
-  if(ci !== -1 && ci !== P.ci && P.bed){ P.ci = ci; P.bed.setChakra(goalById(goal).hz[ci]); renderFreq(); }
+  if(ci !== -1 && ci !== P.ci && P.bed){
+    P.ci = ci; P.bed.setChakra(goalById(goal).hz[ci]); renderFreq();
+    t += CHAKRA_SHIFT;   // die Stimme setzt erst nach der Stimmgabel ein
+  }
   if(it.rec){
     var s = ctx.createBufferSource(), g = ctx.createGain();
     s.buffer = it.rec.buffer; g.gain.value = it.rec.gain; s.connect(g); g.connect(voiceIn);
