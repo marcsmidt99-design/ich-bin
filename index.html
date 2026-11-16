@@ -259,7 +259,7 @@ ul{padding:0;list-style:none}
       <button class="link" id="plusInfo" type="button">Was ist Plus?</button>
       <button class="link" id="shareBtn" type="button">App weiterempfehlen</button>
     </div>
-    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 10.</span></p>
+    <p class="help">Prototyp. Du nimmst direkt über das Mikrofon auf. Deine Aufnahmen bleiben auf diesem Gerät. <span id="verNote">Version 11.</span></p>
   </section>
 
   <section class="screen" id="s-plus" hidden>
@@ -640,7 +640,7 @@ var SILENT_DUR = 5;   // Anzeigedauer für Sätze ohne Aufnahme
 var BEATS = { 10: 'Alpha', 6: 'Theta', 2: 'Delta' };
 var SCREENS = ['intro','hinweise','ziel','plus','aufnahme','fertig','player'];
 var APP_URL = 'https://marcsmidt99-design.github.io/ich-bin/';
-var VERSION = 10;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
+var VERSION = 11;      // bei jeder Änderung erhöhen, steht in der Zielauswahl und in der Rückmeldung
 
 function $(id){ return document.getElementById(id); }
 
@@ -1686,6 +1686,7 @@ function micError(err){
   if(n === 'OverconstrainedError') return 'Dieses Mikrofon ist nicht mehr verfügbar. Wähle ein anderes.';
   var framed = false;
   try{ framed = window.top !== window.self; }catch(e){ framed = true; }
+  if(n === 'InvalidStateError') return 'Safari gibt das Mikrofon gerade nicht frei, weil die Seite noch auf Abspielen steht. Schließ Safari ganz: vom unteren Rand nach oben wischen und Safari wegschieben. Öffne dann die Seite neu und tippe zuerst auf „Aufnehmen“.';
   if(framed) return 'In dieser Ansicht ist das Mikrofon gesperrt. Öffne die App in Safari oder Chrome unter marcsmidt99-design.github.io/ich-bin, dort nimmst du direkt auf. Hier geht es nur über „Datei wählen“.';
   return 'Kein Zugriff aufs Mikrofon. Entweder wurde er abgelehnt, oder das Mikrofon ist an diesem Ort gesperrt. Nimm dann über „Datei wählen“ auf.' + (n ? ' (' + n + ')' : '');
 }
@@ -1716,19 +1717,48 @@ function listMics(activeId){
     $('micPick').hidden = mics.length < 2;
   }).catch(function(){ $('micPick').hidden = true; });
 }
-/* Mikrofon öffnen. Nur Audio, video ist ausdrücklich false, damit nie nach der Kamera gefragt wird. */
-function openMic(id){
-  releaseMic();
-  var token = mic.req;
-  /* Für die Aufnahme entscheidet das Handy selbst, wie beim ersten Stand, der am iPhone aufgenommen hat */
-  keepLoud(false);
-  outputMode('auto');
-  var c = audio();
+/* iPhone: Steht die Seite noch im Wiedergabe-Modus, etwa nach einer Session oder nach „Anhören“, lehnt Safari das
+   Mikrofon mit „InvalidStateError“ ab. Deshalb vor der Anfrage alles Abspielen anhalten und auf Aufnahme umstellen.
+   Klappt es trotzdem nicht, noch zweimal versuchen: mit dem Modus „auto“ und dann mit einem frischen Ton-Kontext. */
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function askMic(id){
   return navigator.mediaDevices.getUserMedia({ audio: id ? { deviceId: { exact: id } } : true, video: false }).catch(function(err){
     var n = err && err.name;
     if(id && (n === 'OverconstrainedError' || n === 'NotFoundError')) return navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     throw err;
-  }).then(function(stream){
+  });
+}
+function quietForMic(){
+  stopPreview(); keepLoud(false);
+  if(ctx && ctx.state === 'running' && ctx.suspend) return ctx.suspend().catch(function(){});
+  return Promise.resolve();
+}
+function freshAudio(){
+  var old = ctx;
+  ctx = null;
+  if(old){ try{ old.close(); }catch(e){} }
+}
+function getMic(id){
+  return quietForMic().then(function(){
+    outputMode('play-and-record');
+    return askMic(id);
+  }).catch(function(err){
+    if(!err || err.name !== 'InvalidStateError') throw err;
+    outputMode('auto');
+    return wait(400).then(function(){ return askMic(id); });
+  }).catch(function(err){
+    if(!err || err.name !== 'InvalidStateError') throw err;
+    freshAudio(); outputMode('auto');
+    return wait(600).then(function(){ return askMic(id); });
+  });
+}
+/* Mikrofon öffnen. Nur Audio, video ist ausdrücklich false, damit nie nach der Kamera gefragt wird. */
+function openMic(id){
+  releaseMic();
+  var token = mic.req;
+  return getMic(id).then(function(stream){
+    var c = audio();
+    if(c && c.resume) c.resume();
     if(token !== mic.req || current !== 'aufnahme'){
       stream.getTracks().forEach(function(t){ t.stop(); });
       var stale = new Error('stale'); stale.name = 'Stale'; throw stale;
